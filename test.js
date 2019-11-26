@@ -1,3 +1,20 @@
-import Manager from './index'
+import {init, TYPES, store} from './index'
 
-Manager()
+const params = [
+  {
+    type: TYPES.FUNCTIONAL,
+  },
+  {
+    type: TYPES.GA,
+    UA: 'IZDJID-ZA',
+    anonymizeIp: true
+  },
+  {
+    type: TYPES.CUSTOM,
+    name: 'test'
+  }
+]
+
+init(params)
+
+store.functional.listen(val => console.log(val))

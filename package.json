@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "author": "antoninlanglade",
   "description": "Cookies Manager",
+  "homepage": "http://lestudiodigital.github.io/cookz",
   "scripts": {
     "build": "parcel build index.js",
-    "start": "parcel serve --port 3000 index.html"
+    "start": "parcel serve --port 3000 index.html",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -14,18 +17,28 @@
     "> 1%",
     "not dead"
   ],
-  "source": ["index.js", "index.html"],
+  "source": [
+    "index.js",
+    "index.html"
+  ],
   "license": "MIT",
   "targets": {
     "main": {
       "node": ">=4.x",
-      "browsers": ["> 1%", "not dead"]
+      "browsers": [
+        "> 1%",
+        "not dead"
+      ]
     },
     "browser": {
-      "browsers": ["> 1%", "not dead"]
+      "browsers": [
+        "> 1%",
+        "not dead"
+      ]
     }
   },
   "devDependencies": {
+    "gh-pages": "^2.1.1",
     "parcel": "latest"
   },
   "dependencies": {
