@@ -1,0 +1,34 @@
+{
+  "name": "cookz",
+  "version": "0.0.1",
+  "author": "antoninlanglade",
+  "description": "Cookies Manager",
+  "scripts": {
+    "build": "parcel build index.js",
+    "start": "parcel serve --port 3000 index.html"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "browser": "dist/index.js",
+  "browserslist": [
+    "> 1%",
+    "not dead"
+  ],
+  "source": ["index.js", "index.html"],
+  "license": "MIT",
+  "targets": {
+    "main": {
+      "node": ">=4.x",
+      "browsers": ["> 1%", "not dead"]
+    },
+    "browser": {
+      "browsers": ["> 1%", "not dead"]
+    }
+  },
+  "devDependencies": {
+    "parcel": "latest"
+  },
+  "dependencies": {
+    "src": "^1.1.2"
+  }
+}
