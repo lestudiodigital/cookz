@@ -1,3 +1,4 @@
-import { createStore } from './state'
-
-export default (props) => createStore(props)
+export default {
+  popinStatus: false,
+  bannerStatus: false
+}

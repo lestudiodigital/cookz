@@ -42,6 +42,8 @@
     "parcel": "latest"
   },
   "dependencies": {
+    "browser-cookies": "^1.2.0",
+    "classnames": "^2.2.6",
     "src": "^1.1.2"
   }
 }
