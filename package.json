@@ -7,7 +7,7 @@
   "scripts": {
     "build": "parcel build index.js",
     "start": "parcel serve --port 3000 index.html",
-    "predeploy": "npm run build --public-url ./cookz/",
+    "predeploy": "parcel build index.html --out-dir ./cookz --public-url ./cookz",
     "deploy": "gh-pages -d dist"
   },
   "main": "dist/index.js",
