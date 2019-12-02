@@ -1,29 +1,24 @@
 import crel from 'crel'
 import store from '../store'
 
-import css from './banner.css'
-
-const body = document.getElementsByTagName('body')[0]
-
 let $banner
 let $accept
 let $configure
 let cookies
 
 function create () {
-  $accept = crel('button', {class: css.button}, 'Accept all'),
-  $configure = crel('button', {class: css.button}, 'Configure')
+  $accept = crel('button', {class: 'banner-button'}, 'Accept all'),
+  $configure = crel('button', {class: 'banner-button'}, 'Configure')
 
   $banner = crel(
     'div',
-    {class: [css.container, !store.bannerStatus.get() ? 'hide' : ''].join(' ')},
-    crel('div', {class: css.title}, 'Title banner'),
-    crel('div', {class: css.description}, 'Description banner'),
+    {class: ['banner-component', !store.bannerStatus.get() ? 'hide' : ''].join(' ')},
+    crel('div', {class: 'banner-title'}, 'Title banner'),
+    crel('div', {class: 'banner-description'}, 'Description banner'),
     $accept,
     $configure
   )
-
-  body.appendChild($banner)
+  
   listen()
 }
 
@@ -76,7 +71,8 @@ function init (translations, cks) {
 
   return {
     update,
-    destroy
+    destroy,
+    dom: $banner
   }
 }
 

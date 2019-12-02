@@ -1,9 +1,8 @@
 import crel from 'crel'
-import css from './popin.css'
 import store from '../store'
 import TYPES from '../types'
+import { eraseAll, set } from '../cookie'
 
-const body = document.getElementsByTagName('body')[0]
 let translations
 let cookies
 
@@ -13,41 +12,47 @@ let $form
 
 
 function createField (key) {
-  const {title, description} = translations[key]
-  return crel(
-    'div',
-    {class: css.field},
-    crel('input', {type: 'checkbox', name: key, id: key}),
+  const field = translations[key]
+  if (!field || !field.title || !field.description) {
+    console.warn(`Missing title or description for type ${key}`)
+    return
+  }
+
+  const inputParams = {type: 'checkbox', name: key, id: key}
+  if (store[key].get()) inputParams.checked = true
+
+  $fields.push(
     crel(
-      'label',
-      {class: css.label, type: 'checkbox', for: key},
-      crel('span', {class: css.fieldTitle}, title),
-      crel('span', {class: css.fieldDescription}, description)
-    ),
+      'div',
+      {class: 'field'},
+      crel('input', inputParams),
+      crel(
+        'label',
+        {class: 'label', type: 'checkbox', for: key},
+        crel('span', {class: 'field-title'}, field.title),
+        crel('span', {class: 'field-description'}, field.description)
+      ),
+    )
   )
 }
 
 function create () {
   for (const key in cookies) {
-    $fields.push(
-      createField(key)
-    )
+    createField(key)
   }
 
   $form = crel(
     'form',
-    {class: css.form},
     $fields,
     crel('input', {type: 'submit'}, 'submit')
   )
 
   $popin = crel(
     'div',
-    {class: [css.container, !store.popinStatus.get() ? 'hide': ''].join(' ')},
+    {class: ['popin-component', !store.popinStatus.get() ? 'hide': ''].join(' ')},
     $form,
   )
 
-  body.appendChild($popin)
   listen()
 }
 
@@ -61,6 +66,7 @@ function onSubmit (e) {
     const val = input.checked
     state[key] = val
     store[key].set(val)
+    set(key, val ? '1' : '0')
   })
 
   if (!state[TYPES.FUNCTIONAL]) eraseAll()
@@ -103,7 +109,8 @@ function init (trlts, cks) {
 
   return {
     update,
-    destroy
+    destroy,
+    dom: $popin
   }
 }
 

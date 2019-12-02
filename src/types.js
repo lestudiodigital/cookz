@@ -1,5 +1,6 @@
 export default {
   FUNCTIONAL: 'functional',
   PERFORMANCE: 'performance',
-  SOCIAL: 'social'
+  SOCIAL: 'social',
+  ADVERTISING: 'advertising'
 }

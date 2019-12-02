@@ -2,22 +2,21 @@ import { createStore } from './src/state'
 
 import ga from './src/ga.js'
 import store from './src/store'
-import {CookieAbstraction, cookies} from './src/cookie'
+import {add} from './src/cookie'
 import TYPES from './src/types'
 import UIManager from './src/ui/index'
 
+import css from './src/main.scss'
+console.log(css)
+
 const _cookies = {}
-const services = {}
 const customCookies = {}
+const services = {}
 let UI
 
 const update = (name) => (val) => {
-  console.log('UPDATE COOKIE', name, val, _cookies)
+  store.logs.get() && console.log(`[store] => update ${name} to ${val}`)
   _cookies[name].set(val ? '1' : '0')
-}
-
-const erase = () => {
-  _cookies.forEach(cookie => cookie.erase())
 }
 
 function listen () {
@@ -27,66 +26,75 @@ function listen () {
 }
 
 function init (params) {
-  const {plugins, logs, translations} = params
+  const {cookies, logs, translations, debug} = params
   const storeValues = {}
   storeValues.logs = params.logs || false
 
   let isFunctional
   let isPerformance
   let isSocial
+  let isAdvertising
 
-  plugins.forEach(plugin => {
-    const { name } = plugin
-    plugin.logs = logs
+  cookies.forEach(cookie => {
+    const { name } = cookie
 
-    isFunctional |= plugin.type === TYPES.FUNCTIONAL
-    isPerformance |= plugin.type === TYPES.PERFORMANCE
-    isSocial |= plugin.type === TYPES.SOCIAL
+    isFunctional |= cookie.type === TYPES.FUNCTIONAL
+    isPerformance |= cookie.type === TYPES.PERFORMANCE
+    isSocial |= cookie.type === TYPES.SOCIAL
+    isAdvertising |= cookie.type === TYPES.ADVERTISING
 
-
-    if (plugin.service === 'GA' && plugin.type === TYPES.PERFORMANCE) {
-      services.ga = ga(plugin)
-    } else {
-      customCookies[name] = new CookieAbstraction(plugin.name)
+    // GA service
+    if (cookie.service === 'GA' && cookie.type === TYPES.PERFORMANCE) {
+      services.ga = ga(cookie)
+    } else if (cookie.type === TYPES.FUNCTIONAL) {
+      customCookies[name] = add(cookie.name)
     }
   })
 
   // Enable functionnal when there at least 1 coookie
-  if (isSocial || isPerformance) isFunctional = true
+  if (isSocial || isPerformance || isAdvertising) isFunctional = true
 
+  // Check functional type
   if (isFunctional) {
-    _cookies[TYPES.FUNCTIONAL] = new CookieAbstraction(TYPES.FUNCTIONAL)
+    _cookies[TYPES.FUNCTIONAL] = add(TYPES.FUNCTIONAL)
     storeValues[TYPES.FUNCTIONAL] = _cookies[TYPES.FUNCTIONAL].get() === '1'
   }
 
+  // Check performance type
   if (isPerformance) {
-    _cookies[TYPES.PERFORMANCE] = new CookieAbstraction(TYPES.PERFORMANCE)
+    _cookies[TYPES.PERFORMANCE] = add(TYPES.PERFORMANCE)
     storeValues[TYPES.PERFORMANCE] = _cookies[TYPES.PERFORMANCE].get() === '1'
   }
 
+  // Check social type
   if (isSocial) {
-    _cookies[TYPES.SOCIAL] = new CookieAbstraction(TYPES.SOCIAL)
+    _cookies[TYPES.SOCIAL] = add(TYPES.SOCIAL)
     storeValues[TYPES.SOCIAL] = _cookies[TYPES.SOCIAL].get() === '1'
+  }
+
+  // Check advertising type
+  if (isAdvertising) {
+    _cookies[TYPES.ADVERTISING] = add(TYPES.ADVERTISING)
+    storeValues[TYPES.ADVERTISING] = _cookies[TYPES.ADVERTISING].get() === '1'
   }
 
   // Create store from dynamic & static values
   Object.assign(store, createStore(Object.assign(store, storeValues)))
-  Object.assign(cookies, Object.assign(customCookies, _cookies))
 
-  console.log(cookies)
   // Show cookie is there's no functionnal cookie
-  store.bannerStatus.set(!store[TYPES.FUNCTIONAL].get())
+  store.bannerStatus.set(!_cookies[TYPES.FUNCTIONAL].get())
 
   // Listen store events
   listen()
+
   // UI Instance
-  UI = UIManager(_cookies, translations)
-  // return cookies
+  UI = UIManager(_cookies, translations, debug)
 }
 
+export default init
+
 export {
-  init,
   store,
-  TYPES
-  // plugs
+  TYPES,
+  services
 }

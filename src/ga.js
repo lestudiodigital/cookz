@@ -1,6 +1,6 @@
-import { CookieAbstraction } from './cookie'
+import { add } from './cookie'
 import store from './store'
-console.log(CookieAbstraction)
+
 function getExpirationDate (ga) {
   const secExpire = 60 * 60 * 24 * 30 * 13 * 1000
   try {
@@ -57,7 +57,7 @@ function init (props) {
   logs && console.log(`[_ga] => INIT`, props)
 
   appendScript(props.UA)
-  const cookie = new CookieAbstraction('_ga')
+  const cookie = add('_ga')
   start(props, cookie.get())
 
   return {

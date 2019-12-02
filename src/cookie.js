@@ -21,7 +21,35 @@ class CookieAbstraction {
 
 let cookies = {}
 
+function add (key) {
+  if (cookies[key]) {
+    console.warn('Cookie already exist')
+    return
+  }
+
+  return cookies[key] = new CookieAbstraction(key)
+}
+
+function get(key) {
+  if (!cookies[key]) console.warn(`${key} does not exist`)
+  else return cookies[key]
+}
+
+function set(key, val) {
+  if (!cookies[key]) console.warn(`${key} does not exist`)
+  else cookies[key].set(val)
+}
+
+function eraseAll() {
+  for (const key in cookies) {
+    cookies[key].erase()
+  }
+}
+
 export {
-  CookieAbstraction,
-  cookies
+  cookies,
+  add,
+  get,
+  set,
+  eraseAll
 }
