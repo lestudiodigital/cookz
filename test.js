@@ -1,7 +1,8 @@
 import Cookz, {
   TYPES,
   store,
-  services
+  services,
+  css
 } from './index'
 
 const cookies = [

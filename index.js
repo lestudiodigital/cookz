@@ -96,5 +96,6 @@ export default init
 export {
   store,
   TYPES,
-  services
+  services,
+  css
 }
