@@ -653,7 +653,7 @@ var _default = {
   ADVERTISING: 'advertising'
 };
 exports.default = _default;
-},{}],"../node_modules/crel/crel.mjs":[function(require,module,exports) {
+},{}],"node_modules/crel/crel.es.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -677,23 +677,26 @@ var crel = createCommonjsModule(function (module, exports) {
   This code is formatted for run-speed and to assist compilers.
   This might make it harder to read at times, but the code's intention should be transparent. */
   // IIFE our function
-  (exporter => {
+  (function (exporter) {
     // Define our function and its properties
     // These strings are used multiple times, so this makes things smaller once compiled
-    const func = 'function',
-          isNodeString = 'isNode',
-          d = document,
-          // Helper functions used throughout the script
-    isType = (object, type) => typeof object === type,
-          // Recursively appends children to given element. As a text node if not already an element
-    appendChild = (element, child) => {
+    var func = 'function',
+        isNodeString = 'isNode',
+        // Helper functions used throughout the script
+    isType = function (object, type) {
+      return typeof object === type;
+    },
+        // Recursively appends children to given element. As a text node if not already an element
+    appendChild = function (element, child) {
       if (child !== null) {
         if (Array.isArray(child)) {
           // Support (deeply) nested child elements
-          child.map(subChild => appendChild(element, subChild));
+          child.map(function (subChild) {
+            return appendChild(element, subChild);
+          });
         } else {
           if (!crel[isNodeString](child)) {
-            child = d.createTextNode(child);
+            child = document.createTextNode(child);
           }
 
           element.appendChild(child);
@@ -704,13 +707,13 @@ var crel = createCommonjsModule(function (module, exports) {
 
     function crel(element, settings) {
       // Define all used variables / shortcuts here, to make things smaller once compiled
-      let args = arguments,
+      var args = arguments,
           // Note: assigned to a variable to assist compilers.
       index = 1,
           key,
           attribute; // If first argument is an element, use it as is, otherwise treat it as a tagname
 
-      element = crel.isElement(element) ? element : d.createElement(element); // Check if second argument is a settings object
+      element = crel.isElement(element) ? element : document.createElement(element); // Check if second argument is a settings object
 
       if (isType(settings, 'object') && !crel[isNodeString](settings) && !Array.isArray(settings)) {
         // Don't treat settings as a child
@@ -745,20 +748,24 @@ var crel = createCommonjsModule(function (module, exports) {
 
     crel.attrMap = {};
 
-    crel.isElement = object => object instanceof Element;
+    crel.isElement = function (object) {
+      return object instanceof Element;
+    };
 
-    crel[isNodeString] = node => node instanceof Node; // Expose proxy interface
+    crel[isNodeString] = function (node) {
+      return node instanceof Node;
+    }; // Expose proxy interface
 
 
     crel.proxy = new Proxy(crel, {
-      get: (target, key) => {
+      get: function (target, key) {
         !(key in crel) && (crel[key] = crel.bind(null, key));
         return crel[key];
       }
     }); // Export crel
 
     exporter(crel, func);
-  })((product, func) => {
+  })(function (product, func) {
     {
       // Export for Browserify / CommonJS format
       module.exports = product;
@@ -862,7 +869,7 @@ function init(translations, cks) {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js"}],"src/ui/popin.js":[function(require,module,exports) {
+},{"crel":"node_modules/crel/crel.es.js","../store":"src/store.js"}],"src/ui/popin.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -988,7 +995,7 @@ function init(trlts, cks) {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js","../types":"src/types.js","../cookie":"src/cookie.js"}],"src/ui/debug.js":[function(require,module,exports) {
+},{"crel":"node_modules/crel/crel.es.js","../store":"src/store.js","../types":"src/types.js","../cookie":"src/cookie.js"}],"src/ui/debug.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1058,7 +1065,7 @@ function init() {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js"}],"src/ui/index.js":[function(require,module,exports) {
+},{"crel":"node_modules/crel/crel.es.js","../store":"src/store.js"}],"src/ui/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1109,7 +1116,7 @@ function init(cookies, translations, dbg) {
     dom: $cookz
   };
 }
-},{"./banner":"src/ui/banner.js","./popin":"src/ui/popin.js","./debug":"src/ui/debug.js","../store":"src/store.js","crel":"../node_modules/crel/crel.mjs"}],"node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./banner":"src/ui/banner.js","./popin":"src/ui/popin.js","./debug":"src/ui/debug.js","../store":"src/store.js","crel":"node_modules/crel/crel.es.js"}],"node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -1394,7 +1401,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63044" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60619" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
