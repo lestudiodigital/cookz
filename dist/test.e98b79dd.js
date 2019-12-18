@@ -653,7 +653,7 @@ var _default = {
   ADVERTISING: 'advertising'
 };
 exports.default = _default;
-},{}],"../node_modules/crel/crel.mjs":[function(require,module,exports) {
+},{}],"node_modules/crel/crel.es.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -677,23 +677,26 @@ var crel = createCommonjsModule(function (module, exports) {
   This code is formatted for run-speed and to assist compilers.
   This might make it harder to read at times, but the code's intention should be transparent. */
   // IIFE our function
-  (exporter => {
+  (function (exporter) {
     // Define our function and its properties
     // These strings are used multiple times, so this makes things smaller once compiled
-    const func = 'function',
-          isNodeString = 'isNode',
-          d = document,
-          // Helper functions used throughout the script
-    isType = (object, type) => typeof object === type,
-          // Recursively appends children to given element. As a text node if not already an element
-    appendChild = (element, child) => {
+    var func = 'function',
+        isNodeString = 'isNode',
+        // Helper functions used throughout the script
+    isType = function (object, type) {
+      return typeof object === type;
+    },
+        // Recursively appends children to given element. As a text node if not already an element
+    appendChild = function (element, child) {
       if (child !== null) {
         if (Array.isArray(child)) {
           // Support (deeply) nested child elements
-          child.map(subChild => appendChild(element, subChild));
+          child.map(function (subChild) {
+            return appendChild(element, subChild);
+          });
         } else {
           if (!crel[isNodeString](child)) {
-            child = d.createTextNode(child);
+            child = document.createTextNode(child);
           }
 
           element.appendChild(child);
@@ -704,13 +707,13 @@ var crel = createCommonjsModule(function (module, exports) {
 
     function crel(element, settings) {
       // Define all used variables / shortcuts here, to make things smaller once compiled
-      let args = arguments,
+      var args = arguments,
           // Note: assigned to a variable to assist compilers.
       index = 1,
           key,
           attribute; // If first argument is an element, use it as is, otherwise treat it as a tagname
 
-      element = crel.isElement(element) ? element : d.createElement(element); // Check if second argument is a settings object
+      element = crel.isElement(element) ? element : document.createElement(element); // Check if second argument is a settings object
 
       if (isType(settings, 'object') && !crel[isNodeString](settings) && !Array.isArray(settings)) {
         // Don't treat settings as a child
@@ -745,20 +748,24 @@ var crel = createCommonjsModule(function (module, exports) {
 
     crel.attrMap = {};
 
-    crel.isElement = object => object instanceof Element;
+    crel.isElement = function (object) {
+      return object instanceof Element;
+    };
 
-    crel[isNodeString] = node => node instanceof Node; // Expose proxy interface
+    crel[isNodeString] = function (node) {
+      return node instanceof Node;
+    }; // Expose proxy interface
 
 
     crel.proxy = new Proxy(crel, {
-      get: (target, key) => {
+      get: function (target, key) {
         !(key in crel) && (crel[key] = crel.bind(null, key));
         return crel[key];
       }
     }); // Export crel
 
     exporter(crel, func);
-  })((product, func) => {
+  })(function (product, func) {
     {
       // Export for Browserify / CommonJS format
       module.exports = product;
@@ -842,6 +849,7 @@ var $banner;
 var $accept;
 var $configure;
 var cookies;
+var translations;
 
 function create() {
   $accept = (0, _crel.default)('button', {
@@ -870,6 +878,8 @@ function update() {
 }
 
 function destroy() {
+  translations = null;
+  cookies = null;
   unlisten();
 }
 
@@ -913,7 +923,8 @@ function unlisten() {
   $configure.removeEventListener('click', onConfigure);
 }
 
-function init(translations, cks) {
+function init(trlts, cks) {
+  translations = trlts;
   cookies = cks;
   create();
   return {
@@ -925,7 +936,7 @@ function init(translations, cks) {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","classnames":"node_modules/classnames/index.js","../store":"src/store.js"}],"src/ui/popin.js":[function(require,module,exports) {
+},{"crel":"node_modules/crel/crel.es.js","classnames":"node_modules/classnames/index.js","../store":"src/store.js"}],"src/ui/popin.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -983,7 +994,7 @@ function create() {
     createField(key);
   }
 
-  $form = (0, _crel.default)('form', $fields, (0, _crel.default)('input', {
+  $form = (0, _crel.default)('form', $fields, (0, _crel.default)('button', {
     type: 'submit'
   }, 'submit'));
   $popin = (0, _crel.default)('div', {
@@ -1055,7 +1066,7 @@ function init(trlts, cks) {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js","../types":"src/types.js","../cookie":"src/cookie.js","classnames":"node_modules/classnames/index.js"}],"src/ui/debug.js":[function(require,module,exports) {
+},{"crel":"node_modules/crel/crel.es.js","../store":"src/store.js","../types":"src/types.js","../cookie":"src/cookie.js","classnames":"node_modules/classnames/index.js"}],"src/ui/debug.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1129,7 +1140,7 @@ function init() {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js","classnames":"node_modules/classnames/index.js"}],"src/ui/index.js":[function(require,module,exports) {
+},{"crel":"node_modules/crel/crel.es.js","../store":"src/store.js","classnames":"node_modules/classnames/index.js"}],"src/ui/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1183,7 +1194,7 @@ function init(cookies, translations, dbg) {
     dom: $cookz
   };
 }
-},{"./banner":"src/ui/banner.js","./popin":"src/ui/popin.js","./debug":"src/ui/debug.js","../store":"src/store.js","crel":"../node_modules/crel/crel.mjs","classnames":"node_modules/classnames/index.js"}],"node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./banner":"src/ui/banner.js","./popin":"src/ui/popin.js","./debug":"src/ui/debug.js","../store":"src/store.js","crel":"node_modules/crel/crel.es.js","classnames":"node_modules/classnames/index.js"}],"node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -1258,29 +1269,6 @@ module.hot.accept(reloadCSS);
 },{"_css_loader":"node_modules/parcel/src/builtins/css-loader.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-Object.defineProperty(exports, "store", {
-  enumerable: true,
-  get: function () {
-    return _store.default;
-  }
-});
-Object.defineProperty(exports, "TYPES", {
-  enumerable: true,
-  get: function () {
-    return _types.default;
-  }
-});
-Object.defineProperty(exports, "css", {
-  enumerable: true,
-  get: function () {
-    return _main.default;
-  }
-});
-exports.services = exports.default = void 0;
-
 var _state = require("./src/state");
 
 var _ga = _interopRequireDefault(require("./src/ga.js"));
@@ -1297,11 +1285,9 @@ var _main = _interopRequireDefault(require("./src/main.scss"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log(_main.default);
 var _cookies = {};
 var customCookies = {};
 var services = {};
-exports.services = services;
 var UI;
 
 var update = function update(name) {
@@ -1380,18 +1366,19 @@ function init(params) {
   UI = (0, _index.default)(_cookies, translations, debug, className);
 }
 
-var _default = init;
-exports.default = _default;
+module.exports = {
+  init: init,
+  store: _store.default,
+  TYPES: _types.default,
+  services: services,
+  css: _main.default
+};
 },{"./src/state":"src/state/index.js","./src/ga.js":"src/ga.js","./src/store":"src/store.js","./src/cookie":"src/cookie.js","./src/types":"src/types.js","./src/ui/index":"src/ui/index.js","./src/main.scss":"src/main.scss"}],"test.js":[function(require,module,exports) {
 "use strict";
 
-var _index = _interopRequireWildcard(require("./index"));
+var _index = require("./index");
 
 var _translations;
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -1408,9 +1395,9 @@ var cookies = [{
 }, {
   type: _index.TYPES.ADVERTISING
 }];
-(0, _index.default)({
+(0, _index.init)({
   logs: false,
-  // debug: true,
+  debug: true,
   className: 'test-cookies',
   translations: (_translations = {
     banner: {
@@ -1470,7 +1457,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57211" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55086" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

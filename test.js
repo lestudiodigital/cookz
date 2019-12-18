@@ -1,4 +1,5 @@
-import Cookz, {
+import {
+  init,
   TYPES,
   store,
   services,
@@ -24,9 +25,9 @@ const cookies = [
   },
 ]
 
-Cookz({
+init({
   logs: false,
-  // debug: true,
+  debug: true,
   className: 'test-cookies',
   translations: {
     banner: {

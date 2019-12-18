@@ -11,7 +11,6 @@ let $popin
 let $fields = []
 let $form
 
-
 function createField (key) {
   const field = translations[key]
   if (!field || !field.title || !field.description) {

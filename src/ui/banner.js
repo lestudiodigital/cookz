@@ -6,6 +6,7 @@ let $banner
 let $accept
 let $configure
 let cookies
+let translations
 
 function create () {
   $accept = crel('button', {class: 'banner-button'}, 'Accept all'),
@@ -31,6 +32,8 @@ function update () {
 }
 
 function destroy () {
+  translations = null
+  cookies = null
   unlisten()
 }
 
@@ -69,7 +72,8 @@ function unlisten () {
   $configure.removeEventListener('click', onConfigure)
 }
 
-function init (translations, cks) {
+function init (trlts, cks) {
+  translations= trlts
   cookies = cks
   create()
 

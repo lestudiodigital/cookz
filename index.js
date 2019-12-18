@@ -7,7 +7,6 @@ import TYPES from './src/types'
 import UIManager from './src/ui/index'
 
 import css from './src/main.scss'
-console.log(css)
 
 const _cookies = {}
 const customCookies = {}
@@ -91,9 +90,9 @@ function init (params) {
   UI = UIManager(_cookies, translations, debug, className)
 }
 
-export default init
 
-export {
+module.exports = {
+  init,
   store,
   TYPES,
   services,
