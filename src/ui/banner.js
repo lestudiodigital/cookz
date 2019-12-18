@@ -9,8 +9,10 @@ let cookies
 let translations
 
 function create () {
-  $accept = crel('button', {class: 'banner-button'}, 'Accept all'),
-  $configure = crel('button', {class: 'banner-button'}, 'Configure')
+  console.log(translations)
+  const {banner} = translations
+  $accept = crel('button', {class: 'banner-button'}, banner.accept),
+  $configure = crel('button', {class: 'banner-button'}, banner.configure)
 
   $banner = crel(
     'div',
@@ -18,8 +20,8 @@ function create () {
     crel(
       'div',
       {class: 'banner-content'},
-      crel('div', {class: 'banner-title'}, 'Title banner'),
-      crel('div', {class: 'banner-description'}, 'Description banner'),
+      crel('div', {class: 'banner-title'}, banner.title),
+      crel('div', {class: 'banner-description'}, banner.description),
       crel('div', {class: 'banner-ctas'}, $accept, $configure)
     )
   )

@@ -31,10 +31,10 @@ init({
   className: 'test-cookies',
   translations: {
     banner: {
-      title: '',
-      description: '',
-      accept: '',
-      configure: '',
+      title: 'Banner title',
+      description: 'Banner desc',
+      accept: 'Accept',
+      configure: 'Configure',
     },
     [TYPES.FUNCTIONAL]: {
       title: 'title func',

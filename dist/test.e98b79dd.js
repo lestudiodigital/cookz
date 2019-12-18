@@ -852,11 +852,14 @@ var cookies;
 var translations;
 
 function create() {
+  console.log(translations);
+  var _translations = translations,
+      banner = _translations.banner;
   $accept = (0, _crel.default)('button', {
     class: 'banner-button'
-  }, 'Accept all'), $configure = (0, _crel.default)('button', {
+  }, banner.accept), $configure = (0, _crel.default)('button', {
     class: 'banner-button'
-  }, 'Configure');
+  }, banner.configure);
   $banner = (0, _crel.default)('div', {
     class: (0, _classnames.default)('banner-component', {
       hide: !_store.default.bannerStatus.get()
@@ -865,9 +868,9 @@ function create() {
     class: 'banner-content'
   }, (0, _crel.default)('div', {
     class: 'banner-title'
-  }, 'Title banner'), (0, _crel.default)('div', {
+  }, banner.title), (0, _crel.default)('div', {
     class: 'banner-description'
-  }, 'Description banner'), (0, _crel.default)('div', {
+  }, banner.description), (0, _crel.default)('div', {
     class: 'banner-ctas'
   }, $accept, $configure)));
   listen();
@@ -1401,10 +1404,10 @@ var cookies = [{
   className: 'test-cookies',
   translations: (_translations = {
     banner: {
-      title: '',
-      description: '',
-      accept: '',
-      configure: ''
+      title: 'Banner title',
+      description: 'Banner desc',
+      accept: 'Accept',
+      configure: 'Configure'
     }
   }, _defineProperty(_translations, _index.TYPES.FUNCTIONAL, {
     title: 'title func',
@@ -1457,7 +1460,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55086" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59989" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
