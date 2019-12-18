@@ -45,6 +45,7 @@
   "dependencies": {
     "browser-cookies": "^1.2.0",
     "classnames": "^2.2.6",
+    "crel": "^4.2.0",
     "src": "^1.1.2"
   }
 }
