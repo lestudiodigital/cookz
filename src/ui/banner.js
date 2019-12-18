@@ -14,8 +14,12 @@ function create () {
   $banner = crel(
     'div',
     {class: classNames('banner-component', {hide: !store.bannerStatus.get()})},
-    crel('div', {class: 'banner-title'}, 'Title banner'),
-    crel('div', {class: 'banner-description'}, 'Description banner'),
+    crel(
+      'div',
+      {class: 'banner-content'},
+      crel('div', {class: 'banner-title'}, 'Title banner'),
+      crel('div', {class: 'banner-description'}, 'Description banner')
+    ),
     $accept,
     $configure
   )

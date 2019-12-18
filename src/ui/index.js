@@ -28,13 +28,12 @@ export default function init (cookies, translations, dbg, className = '') {
   popin = Popin(translations, cookies)
   if (dbg) debug = Debug()
 
-  console.log(className)
   const $cookz = crel(
     'div',
     {class: classNames('cookz-component', className)},
     banner.dom,
     popin.dom,
-    debug.dom
+    dbg ? debug.dom : null
   )
 
   body.appendChild($cookz)

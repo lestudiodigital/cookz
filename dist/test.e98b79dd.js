@@ -854,10 +854,12 @@ function create() {
       hide: !_store.default.bannerStatus.get()
     })
   }, (0, _crel.default)('div', {
+    class: 'banner-content'
+  }, (0, _crel.default)('div', {
     class: 'banner-title'
   }, 'Title banner'), (0, _crel.default)('div', {
     class: 'banner-description'
-  }, 'Description banner'), $accept, $configure);
+  }, 'Description banner')), $accept, $configure);
   listen();
 }
 
@@ -1169,10 +1171,9 @@ function init(cookies, translations, dbg) {
   banner = (0, _banner.default)(translations, cookies);
   popin = (0, _popin.default)(translations, cookies);
   if (dbg) debug = (0, _debug.default)();
-  console.log(className);
   var $cookz = (0, _crel.default)('div', {
     class: (0, _classnames.default)('cookz-component', className)
-  }, banner.dom, popin.dom, debug.dom);
+  }, banner.dom, popin.dom, dbg ? debug.dom : null);
   body.appendChild($cookz);
   return {
     update: update,
@@ -1407,7 +1408,7 @@ var cookies = [{
 }];
 (0, _index.default)({
   logs: false,
-  debug: true,
+  // debug: true,
   className: 'test-cookies',
   translations: (_translations = {
     banner: {
@@ -1467,7 +1468,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60739" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55896" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
