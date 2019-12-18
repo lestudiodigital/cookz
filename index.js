@@ -26,7 +26,7 @@ function listen () {
 }
 
 function init (params) {
-  const {cookies, logs, translations, debug} = params
+  const {cookies, logs, translations, debug, className} = params
   const storeValues = {}
   storeValues.logs = params.logs || false
 
@@ -88,7 +88,7 @@ function init (params) {
   listen()
 
   // UI Instance
-  UI = UIManager(_cookies, translations, debug)
+  UI = UIManager(_cookies, translations, debug, className)
 }
 
 export default init

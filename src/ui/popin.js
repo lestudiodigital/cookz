@@ -2,6 +2,7 @@ import crel from 'crel'
 import store from '../store'
 import TYPES from '../types'
 import { eraseAll, set } from '../cookie'
+import classNames from 'classnames'
 
 let translations
 let cookies
@@ -49,7 +50,7 @@ function create () {
 
   $popin = crel(
     'div',
-    {class: ['popin-component', !store.popinStatus.get() ? 'hide': ''].join(' ')},
+    {class: classNames('popin-component', {hide: !store.popinStatus.get()})},
     $form,
   )
 

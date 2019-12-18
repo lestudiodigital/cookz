@@ -3,6 +3,7 @@ import Popin from './popin'
 import Debug from './debug'
 import store from '../store'
 import crel from 'crel'
+import classNames from 'classnames'
 
 let banner
 let popin
@@ -22,14 +23,15 @@ function destroy () {
   debug && debug.destroy()
 }
 
-export default function init (cookies, translations, dbg) {
+export default function init (cookies, translations, dbg, className = '') {
   banner = Banner(translations, cookies)
   popin = Popin(translations, cookies)
   if (dbg) debug = Debug()
 
+  console.log(className)
   const $cookz = crel(
     'div',
-    {class: 'cookz-component'},
+    {class: classNames('cookz-component', className)},
     banner.dom,
     popin.dom,
     debug.dom

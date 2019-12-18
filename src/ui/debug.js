@@ -1,5 +1,6 @@
 import crel from 'crel'
 import store from '../store'
+import classNames from 'classnames'
 
 let $fields = {}
 let $debug
@@ -7,7 +8,7 @@ let $debug
 function createField (key, val) {
   return crel(
     'div',
-    {class: ['debug-field', val ? 'valid' : ''].join(' ')},
+    {class: classNames('debug-field', {valid: val})},
     `${key} = ${val}`
   )
 }

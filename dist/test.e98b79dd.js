@@ -767,6 +767,61 @@ var crel = createCommonjsModule(function (module, exports) {
 });
 var _default = crel;
 exports.default = _default;
+},{}],"node_modules/classnames/index.js":[function(require,module,exports) {
+var define;
+/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+		// register as 'classnames', consistent with npm package name
+		define('classnames', [], function () {
+			return classNames;
+		});
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
 },{}],"src/ui/banner.js":[function(require,module,exports) {
 "use strict";
 
@@ -776,6 +831,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _crel = _interopRequireDefault(require("crel"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
 
 var _store = _interopRequireDefault(require("../store"));
 
@@ -793,7 +850,9 @@ function create() {
     class: 'banner-button'
   }, 'Configure');
   $banner = (0, _crel.default)('div', {
-    class: ['banner-component', !_store.default.bannerStatus.get() ? 'hide' : ''].join(' ')
+    class: (0, _classnames.default)('banner-component', {
+      hide: !_store.default.bannerStatus.get()
+    })
   }, (0, _crel.default)('div', {
     class: 'banner-title'
   }, 'Title banner'), (0, _crel.default)('div', {
@@ -862,7 +921,7 @@ function init(translations, cks) {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js"}],"src/ui/popin.js":[function(require,module,exports) {
+},{"crel":"../node_modules/crel/crel.mjs","classnames":"node_modules/classnames/index.js","../store":"src/store.js"}],"src/ui/popin.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -877,6 +936,8 @@ var _store = _interopRequireDefault(require("../store"));
 var _types = _interopRequireDefault(require("../types"));
 
 var _cookie = require("../cookie");
+
+var _classnames = _interopRequireDefault(require("classnames"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -922,7 +983,9 @@ function create() {
     type: 'submit'
   }, 'submit'));
   $popin = (0, _crel.default)('div', {
-    class: ['popin-component', !_store.default.popinStatus.get() ? 'hide' : ''].join(' ')
+    class: (0, _classnames.default)('popin-component', {
+      hide: !_store.default.popinStatus.get()
+    })
   }, $form);
   listen();
 }
@@ -988,7 +1051,7 @@ function init(trlts, cks) {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js","../types":"src/types.js","../cookie":"src/cookie.js"}],"src/ui/debug.js":[function(require,module,exports) {
+},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js","../types":"src/types.js","../cookie":"src/cookie.js","classnames":"node_modules/classnames/index.js"}],"src/ui/debug.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1000,6 +1063,8 @@ var _crel = _interopRequireDefault(require("crel"));
 
 var _store = _interopRequireDefault(require("../store"));
 
+var _classnames = _interopRequireDefault(require("classnames"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var $fields = {};
@@ -1007,7 +1072,9 @@ var $debug;
 
 function createField(key, val) {
   return (0, _crel.default)('div', {
-    class: ['debug-field', val ? 'valid' : ''].join(' ')
+    class: (0, _classnames.default)('debug-field', {
+      valid: val
+    })
   }, "".concat(key, " = ").concat(val));
 }
 
@@ -1058,7 +1125,7 @@ function init() {
 
 var _default = init;
 exports.default = _default;
-},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js"}],"src/ui/index.js":[function(require,module,exports) {
+},{"crel":"../node_modules/crel/crel.mjs","../store":"src/store.js","classnames":"node_modules/classnames/index.js"}],"src/ui/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1075,6 +1142,8 @@ var _debug = _interopRequireDefault(require("./debug"));
 var _store = _interopRequireDefault(require("../store"));
 
 var _crel = _interopRequireDefault(require("crel"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1096,11 +1165,13 @@ function destroy() {
 }
 
 function init(cookies, translations, dbg) {
+  var className = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
   banner = (0, _banner.default)(translations, cookies);
   popin = (0, _popin.default)(translations, cookies);
   if (dbg) debug = (0, _debug.default)();
+  console.log(className);
   var $cookz = (0, _crel.default)('div', {
-    class: 'cookz-component'
+    class: (0, _classnames.default)('cookz-component', className)
   }, banner.dom, popin.dom, debug.dom);
   body.appendChild($cookz);
   return {
@@ -1109,7 +1180,7 @@ function init(cookies, translations, dbg) {
     dom: $cookz
   };
 }
-},{"./banner":"src/ui/banner.js","./popin":"src/ui/popin.js","./debug":"src/ui/debug.js","../store":"src/store.js","crel":"../node_modules/crel/crel.mjs"}],"node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./banner":"src/ui/banner.js","./popin":"src/ui/popin.js","./debug":"src/ui/debug.js","../store":"src/store.js","crel":"../node_modules/crel/crel.mjs","classnames":"node_modules/classnames/index.js"}],"node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -1248,7 +1319,8 @@ function init(params) {
   var cookies = params.cookies,
       logs = params.logs,
       translations = params.translations,
-      debug = params.debug;
+      debug = params.debug,
+      className = params.className;
   var storeValues = {};
   storeValues.logs = params.logs || false;
   var isFunctional;
@@ -1302,7 +1374,7 @@ function init(params) {
 
   listen(); // UI Instance
 
-  UI = (0, _index.default)(_cookies, translations, debug);
+  UI = (0, _index.default)(_cookies, translations, debug, className);
 }
 
 var _default = init;
@@ -1336,6 +1408,7 @@ var cookies = [{
 (0, _index.default)({
   logs: false,
   debug: true,
+  className: 'test-cookies',
   translations: (_translations = {
     banner: {
       title: '',
@@ -1394,7 +1467,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63044" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57470" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

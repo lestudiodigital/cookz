@@ -27,6 +27,7 @@ const cookies = [
 Cookz({
   logs: false,
   debug: true,
+  className: 'test-cookies',
   translations: {
     banner: {
       title: '',

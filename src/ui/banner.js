@@ -1,4 +1,5 @@
 import crel from 'crel'
+import classNames from 'classnames'
 import store from '../store'
 
 let $banner
@@ -12,7 +13,7 @@ function create () {
 
   $banner = crel(
     'div',
-    {class: ['banner-component', !store.bannerStatus.get() ? 'hide' : ''].join(' ')},
+    {class: classNames('banner-component', {hide: !store.bannerStatus.get()})},
     crel('div', {class: 'banner-title'}, 'Title banner'),
     crel('div', {class: 'banner-description'}, 'Description banner'),
     $accept,
