@@ -18,10 +18,9 @@ function create () {
       'div',
       {class: 'banner-content'},
       crel('div', {class: 'banner-title'}, 'Title banner'),
-      crel('div', {class: 'banner-description'}, 'Description banner')
-    ),
-    $accept,
-    $configure
+      crel('div', {class: 'banner-description'}, 'Description banner'),
+      crel('div', {class: 'banner-ctas'}, $accept, $configure)
+    )
   )
 
   listen()

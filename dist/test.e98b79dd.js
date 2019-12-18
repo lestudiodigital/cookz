@@ -859,7 +859,9 @@ function create() {
     class: 'banner-title'
   }, 'Title banner'), (0, _crel.default)('div', {
     class: 'banner-description'
-  }, 'Description banner')), $accept, $configure);
+  }, 'Description banner'), (0, _crel.default)('div', {
+    class: 'banner-ctas'
+  }, $accept, $configure)));
   listen();
 }
 
@@ -1468,7 +1470,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55896" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57211" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
