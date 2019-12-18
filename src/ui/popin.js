@@ -45,7 +45,7 @@ function create () {
   $form = crel(
     'form',
     $fields,
-    crel('input', {type: 'submit'}, 'submit')
+    crel('button', {type: 'submit'}, 'submit')
   )
 
   $popin = crel(
