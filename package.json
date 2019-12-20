@@ -24,7 +24,6 @@
   "license": "MIT",
   "targets": {
     "main": {
-      "node": ">=4.x",
       "browsers": [
         "> 1%",
         "not dead"

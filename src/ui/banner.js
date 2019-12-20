@@ -9,7 +9,6 @@ let cookies
 let translations
 
 function create () {
-  console.log(translations)
   const {banner} = translations
   $accept = crel('button', {class: 'banner-button'}, banner.accept),
   $configure = crel('button', {class: 'banner-button'}, banner.configure)
