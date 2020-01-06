@@ -49,7 +49,7 @@ function start (props, cookie) {
 }
 
 function trigger (func) {
-  store.functional.get() === true && func(window.gta)
+  store.functional.get() === true && func(window.gtag)
 }
 
 function init (props) {
