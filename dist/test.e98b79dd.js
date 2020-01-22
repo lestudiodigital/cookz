@@ -855,8 +855,7 @@ var cookies;
 var translations;
 
 function create() {
-  var _translations = translations,
-      banner = _translations.banner;
+  var banner = translations.banner || {};
   $title = (0, _crel.default)('div', {
     class: 'banner-title'
   }, banner.title);
@@ -978,13 +977,7 @@ var $form;
 var $submit;
 
 function createField(key, params) {
-  var field = translations[key];
-
-  if (!field || !field.title || !field.description) {
-    console.warn("Missing title or description for type ".concat(key));
-    return;
-  }
-
+  var field = translations[key] || {};
   var inputParams = {
     type: 'checkbox',
     name: key,
@@ -1348,7 +1341,8 @@ function updateTexts(translations) {
 function init(params) {
   var cookies = params.cookies,
       logs = params.logs,
-      translations = params.translations,
+      _params$translations = params.translations,
+      translations = _params$translations === void 0 ? {} : _params$translations,
       debug = params.debug,
       className = params.className;
   var storeValues = {};
@@ -1424,7 +1418,7 @@ module.exports = {
 
 var _index = require("./index");
 
-var _translations, _t;
+var _translations;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -1444,7 +1438,7 @@ var cookies = [{
 }];
 var translations = (_translations = {
   banner: {
-    title: 'Banner title',
+    title: 'Banner <br/><br/>title',
     description: 'Banner desc',
     accept: 'Accept',
     configure: 'Configure'
@@ -1466,32 +1460,11 @@ var translations = (_translations = {
   logs: false,
   debug: true,
   className: 'test-cookies',
-  translations: translations,
   cookies: cookies
 });
-var t2 = (_t = {
-  banner: {
-    title: 'Title updated',
-    description: 'Description updated',
-    accept: 'Accept updated',
-    configure: 'Configure updated'
-  }
-}, _defineProperty(_t, _index.TYPES.FUNCTIONAL, {
-  title: 'title func updated',
-  description: 'description func updated'
-}), _defineProperty(_t, _index.TYPES.PERFORMANCE, {
-  title: 'title perf updated',
-  description: 'description perf updated'
-}), _defineProperty(_t, _index.TYPES.SOCIAL, {
-  title: 'title social updated',
-  description: 'description social updated'
-}), _defineProperty(_t, _index.TYPES.ADVERTISING, {
-  title: 'title advert updated',
-  description: 'description advert updated'
-}), _defineProperty(_t, "submit", 'Submit updated'), _t);
 setTimeout(function () {
-  (0, _index.updateTexts)(t2);
-}, 2000);
+  (0, _index.updateTexts)(translations);
+}, 1000);
 var $buttonBanner = document.getElementById('show-banner');
 var $buttonPopin = document.getElementById('show-popin');
 $buttonBanner.addEventListener('click', function () {
@@ -1528,7 +1501,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51901" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61442" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

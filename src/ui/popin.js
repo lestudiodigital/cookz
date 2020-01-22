@@ -13,11 +13,7 @@ let $form
 let $submit
 
 function createField (key, params) {
-  const field = translations[key]
-  if (!field || !field.title || !field.description) {
-    console.warn(`Missing title or description for type ${key}`)
-    return
-  }
+  const field = translations[key] || {}
 
   const inputParams = {type: 'checkbox', name: key, id: key}
   if (params.required) inputParams.required = 'required'

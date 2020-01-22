@@ -11,7 +11,7 @@ let cookies
 let translations
 
 function create () {
-  const {banner} = translations
+  let banner = translations.banner || {}
   $title = crel('div', {class: 'banner-title'}, banner.title)
   $description = crel('div', {class: 'banner-description'}, banner.description)
   $accept = crel('button', {class: 'banner-button'}, banner.accept)

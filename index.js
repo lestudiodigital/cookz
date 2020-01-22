@@ -29,7 +29,7 @@ function updateTexts (translations) {
 }
 
 function init (params) {
-  const {cookies, logs, translations, debug, className} = params
+  const {cookies, logs, translations = {}, debug, className} = params
   const storeValues = {}
   storeValues.logs = params.logs || false
 
