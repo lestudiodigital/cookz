@@ -11,10 +11,9 @@ let debug
 
 const body = document.getElementsByTagName('body')[0]
 
-function update () {
-  banner.update()
-  popin.update()
-  debug && debug.update()
+function updateTexts (translations) {
+  banner.updateTexts(translations)
+  popin.updateTexts(translations)
 }
 
 function destroy () {
@@ -23,9 +22,9 @@ function destroy () {
   debug && debug.destroy()
 }
 
-export default function init (cookies, translations, dbg, className = '') {
+export default function init (cookies, translations, params, dbg, className = '') {
   banner = Banner(translations, cookies)
-  popin = Popin(translations, cookies)
+  popin = Popin(translations, cookies, params)
   if (dbg) debug = Debug()
 
   const $cookz = crel(
@@ -39,7 +38,7 @@ export default function init (cookies, translations, dbg, className = '') {
   body.appendChild($cookz)
 
   return {
-    update,
+    updateTexts,
     destroy,
     dom: $cookz
   }

@@ -3,6 +3,7 @@ import {
   TYPES,
   store,
   services,
+  updateTexts,
   css
 } from './index'
 
@@ -15,7 +16,8 @@ const cookies = [
   },
   {
     type: TYPES.FUNCTIONAL,
-    name: 'experience'
+    name: 'experience',
+    required: true
   },
   {
     type: TYPES.SOCIAL
@@ -25,36 +27,69 @@ const cookies = [
   },
 ]
 
+const translations = {
+  banner: {
+    title: 'Banner title',
+    description: 'Banner desc',
+    accept: 'Accept',
+    configure: 'Configure',
+  },
+  [TYPES.FUNCTIONAL]: {
+    title: 'title func',
+    description: 'description func'
+  },
+  [TYPES.PERFORMANCE]: {
+    title: 'title perf',
+    description: 'description perf'
+  },
+  [TYPES.SOCIAL]: {
+    title: 'title social',
+    description: 'description social'
+  },
+  [TYPES.ADVERTISING]: {
+    title: 'title advert',
+    description: 'description advert'
+  },
+  submit: 'Submit'
+}
+
 init({
   logs: false,
   debug: true,
   className: 'test-cookies',
-  translations: {
-    banner: {
-      title: 'Banner title',
-      description: 'Banner desc',
-      accept: 'Accept',
-      configure: 'Configure',
-    },
-    [TYPES.FUNCTIONAL]: {
-      title: 'title func',
-      description: 'description func'
-    },
-    [TYPES.PERFORMANCE]: {
-      title: 'title perf',
-      description: 'description perf'
-    },
-    [TYPES.SOCIAL]: {
-      title: 'title social',
-      description: 'description social'
-    },
-    [TYPES.ADVERTISING]: {
-      title: 'title advert',
-      description: 'description advert'
-    }
-  },
+  translations,
   cookies
 })
+
+const t2 = {
+  banner: {
+    title: 'Title updated',
+    description: 'Description updated',
+    accept: 'Accept updated',
+    configure: 'Configure updated',
+  },
+  [TYPES.FUNCTIONAL]: {
+    title: 'title func updated',
+    description: 'description func updated'
+  },
+  [TYPES.PERFORMANCE]: {
+    title: 'title perf updated',
+    description: 'description perf updated'
+  },
+  [TYPES.SOCIAL]: {
+    title: 'title social updated',
+    description: 'description social updated'
+  },
+  [TYPES.ADVERTISING]: {
+    title: 'title advert updated',
+    description: 'description advert updated'
+  },
+  submit: 'Submit updated'
+}
+
+setTimeout(() => {
+  updateTexts(t2)
+}, 2000)
 
 const $buttonBanner = document.getElementById('show-banner')
 const $buttonPopin = document.getElementById('show-popin')

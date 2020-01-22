@@ -5,12 +5,16 @@ import store from '../store'
 let $banner
 let $accept
 let $configure
+let $title
+let $description
 let cookies
 let translations
 
 function create () {
   const {banner} = translations
-  $accept = crel('button', {class: 'banner-button'}, banner.accept),
+  $title = crel('div', {class: 'banner-title'}, banner.title)
+  $description = crel('div', {class: 'banner-description'}, banner.description)
+  $accept = crel('button', {class: 'banner-button'}, banner.accept)
   $configure = crel('button', {class: 'banner-button'}, banner.configure)
 
   $banner = crel(
@@ -19,8 +23,8 @@ function create () {
     crel(
       'div',
       {class: 'banner-content'},
-      crel('div', {class: 'banner-title'}, banner.title),
-      crel('div', {class: 'banner-description'}, banner.description),
+      $title,
+      $description,
       crel('div', {class: 'banner-ctas'}, $accept, $configure)
     )
   )
@@ -28,8 +32,13 @@ function create () {
   listen()
 }
 
-function update () {
-  $configure.innerHTML = 'test'
+function updateTexts (translations) {
+  const {banner} = translations
+
+  $title.innerHTML = banner.title
+  $description.innerHTML = banner.description
+  $accept.innerHTML = banner.accept
+  $configure.innerHTML = banner.configure
 }
 
 function destroy () {
@@ -48,6 +57,7 @@ function hide () {
 
 function onAccept () {
   store.bannerStatus.set(false)
+  store.hasInteract.set(true)
 
   for (const key in cookies) {
     store[key].set(true)
@@ -79,7 +89,7 @@ function init (trlts, cks) {
   create()
 
   return {
-    update,
+    updateTexts,
     destroy,
     dom: $banner
   }

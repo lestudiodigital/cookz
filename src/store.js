@@ -1,4 +1,5 @@
 export default {
   popinStatus: false,
-  bannerStatus: false
+  bannerStatus: false,
+  hasInteract: true
 }

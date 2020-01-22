@@ -24,6 +24,10 @@ function listen () {
   }
 }
 
+function updateTexts (translations) {
+  UI.updateTexts(translations)
+}
+
 function init (params) {
   const {cookies, logs, translations, debug, className} = params
   const storeValues = {}
@@ -81,13 +85,16 @@ function init (params) {
   Object.assign(store, createStore(Object.assign(store, storeValues)))
 
   // Show cookie is there's no functionnal cookie
-  store.bannerStatus.set(!_cookies[TYPES.FUNCTIONAL].get())
+  if (!_cookies[TYPES.FUNCTIONAL].get()) {
+    store.bannerStatus.set(true)
+    store.hasInteract.set(false)
+  }
 
   // Listen store events
   listen()
 
   // UI Instance
-  UI = UIManager(_cookies, translations, debug, className)
+  UI = UIManager(_cookies, translations, cookies, debug, className)
 }
 
 
@@ -96,5 +103,6 @@ module.exports = {
   store,
   TYPES,
   services,
-  css
+  css,
+  updateTexts
 }

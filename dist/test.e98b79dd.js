@@ -558,7 +558,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _default = {
   popinStatus: false,
-  bannerStatus: false
+  bannerStatus: false,
+  hasInteract: true
 };
 exports.default = _default;
 },{}],"src/ga.js":[function(require,module,exports) {
@@ -621,7 +622,7 @@ function start(props, cookie) {
 }
 
 function trigger(func) {
-  _store.default.functional.get() === true && func(window.gta);
+  _store.default.functional.get() === true && func(window.gtag);
 }
 
 function init(props) {
@@ -848,16 +849,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var $banner;
 var $accept;
 var $configure;
+var $title;
+var $description;
 var cookies;
 var translations;
 
 function create() {
-  console.log(translations);
   var _translations = translations,
       banner = _translations.banner;
+  $title = (0, _crel.default)('div', {
+    class: 'banner-title'
+  }, banner.title);
+  $description = (0, _crel.default)('div', {
+    class: 'banner-description'
+  }, banner.description);
   $accept = (0, _crel.default)('button', {
     class: 'banner-button'
-  }, banner.accept), $configure = (0, _crel.default)('button', {
+  }, banner.accept);
+  $configure = (0, _crel.default)('button', {
     class: 'banner-button'
   }, banner.configure);
   $banner = (0, _crel.default)('div', {
@@ -866,18 +875,18 @@ function create() {
     })
   }, (0, _crel.default)('div', {
     class: 'banner-content'
-  }, (0, _crel.default)('div', {
-    class: 'banner-title'
-  }, banner.title), (0, _crel.default)('div', {
-    class: 'banner-description'
-  }, banner.description), (0, _crel.default)('div', {
+  }, $title, $description, (0, _crel.default)('div', {
     class: 'banner-ctas'
   }, $accept, $configure)));
   listen();
 }
 
-function update() {
-  $configure.innerHTML = 'test';
+function updateTexts(translations) {
+  var banner = translations.banner;
+  $title.innerHTML = banner.title;
+  $description.innerHTML = banner.description;
+  $accept.innerHTML = banner.accept;
+  $configure.innerHTML = banner.configure;
 }
 
 function destroy() {
@@ -896,6 +905,8 @@ function hide() {
 
 function onAccept() {
   _store.default.bannerStatus.set(false);
+
+  _store.default.hasInteract.set(true);
 
   for (var key in cookies) {
     _store.default[key].set(true);
@@ -931,7 +942,7 @@ function init(trlts, cks) {
   cookies = cks;
   create();
   return {
-    update: update,
+    updateTexts: updateTexts,
     destroy: destroy,
     dom: $banner
   };
@@ -964,8 +975,9 @@ var cookies;
 var $popin;
 var $fields = [];
 var $form;
+var $submit;
 
-function createField(key) {
+function createField(key, params) {
   var field = translations[key];
 
   if (!field || !field.title || !field.description) {
@@ -978,6 +990,7 @@ function createField(key) {
     name: key,
     id: key
   };
+  if (params.required) inputParams.required = 'required';
   if (_store.default[key].get()) inputParams.checked = true;
   $fields.push((0, _crel.default)('div', {
     class: 'field'
@@ -992,20 +1005,42 @@ function createField(key) {
   }, field.description))));
 }
 
-function create() {
+function create(params) {
+  var _loop = function _loop(key) {
+    var prms = void 0;
+    params.forEach(function (pr) {
+      if (pr.type === key) prms = pr;
+    });
+    createField(key, prms);
+  };
+
   for (var key in cookies) {
-    createField(key);
+    _loop(key);
   }
 
-  $form = (0, _crel.default)('form', $fields, (0, _crel.default)('button', {
+  $submit = (0, _crel.default)('button', {
     type: 'submit'
-  }, 'submit'));
+  }, translations.submit);
+  $form = (0, _crel.default)('form', $fields, $submit);
   $popin = (0, _crel.default)('div', {
     class: (0, _classnames.default)('popin-component', {
       hide: !_store.default.popinStatus.get()
     })
   }, $form);
   listen();
+}
+
+function updateTexts(translations) {
+  $submit.innerHTML = translations.submit;
+  var index = 0;
+
+  for (var key in cookies) {
+    var trls = translations[key];
+    var $field = $fields[index];
+    $field.querySelector('.field-title').innerHTML = trls.title;
+    $field.querySelector('.field-description').innerHTML = trls.description;
+    index++;
+  }
 }
 
 function onSubmit(e) {
@@ -1024,6 +1059,8 @@ function onSubmit(e) {
   if (!state[_types.default.FUNCTIONAL]) (0, _cookie.eraseAll)();
 
   _store.default.popinStatus.set(false);
+
+  _store.default.hasInteract.set(true);
 }
 
 function show() {
@@ -1050,18 +1087,16 @@ function unlisten() {
   _store.default.popinStatus.unlisten(toggle);
 }
 
-function update() {}
-
 function destroy() {
   unlisten();
 }
 
-function init(trlts, cks) {
+function init(trlts, cks, params) {
   translations = trlts;
   cookies = cks;
-  create();
+  create(params);
   return {
-    update: update,
+    updateTexts: updateTexts,
     destroy: destroy,
     dom: $popin
   };
@@ -1170,10 +1205,9 @@ var popin;
 var debug;
 var body = document.getElementsByTagName('body')[0];
 
-function update() {
-  banner.update();
-  popin.update();
-  debug && debug.update();
+function updateTexts(translations) {
+  banner.updateTexts(translations);
+  popin.updateTexts(translations);
 }
 
 function destroy() {
@@ -1182,17 +1216,17 @@ function destroy() {
   debug && debug.destroy();
 }
 
-function init(cookies, translations, dbg) {
-  var className = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
+function init(cookies, translations, params, dbg) {
+  var className = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
   banner = (0, _banner.default)(translations, cookies);
-  popin = (0, _popin.default)(translations, cookies);
+  popin = (0, _popin.default)(translations, cookies, params);
   if (dbg) debug = (0, _debug.default)();
   var $cookz = (0, _crel.default)('div', {
     class: (0, _classnames.default)('cookz-component', className)
   }, banner.dom, popin.dom, dbg ? debug.dom : null);
   body.appendChild($cookz);
   return {
-    update: update,
+    updateTexts: updateTexts,
     destroy: destroy,
     dom: $cookz
   };
@@ -1307,6 +1341,10 @@ function listen() {
   }
 }
 
+function updateTexts(translations) {
+  UI.updateTexts(translations);
+}
+
 function init(params) {
   var cookies = params.cookies,
       logs = params.logs,
@@ -1361,12 +1399,16 @@ function init(params) {
 
   Object.assign(_store.default, (0, _state.createStore)(Object.assign(_store.default, storeValues))); // Show cookie is there's no functionnal cookie
 
-  _store.default.bannerStatus.set(!_cookies[_types.default.FUNCTIONAL].get()); // Listen store events
+  if (!_cookies[_types.default.FUNCTIONAL].get()) {
+    _store.default.bannerStatus.set(true);
+
+    _store.default.hasInteract.set(false);
+  } // Listen store events
 
 
   listen(); // UI Instance
 
-  UI = (0, _index.default)(_cookies, translations, debug, className);
+  UI = (0, _index.default)(_cookies, translations, cookies, debug, className);
 }
 
 module.exports = {
@@ -1374,14 +1416,15 @@ module.exports = {
   store: _store.default,
   TYPES: _types.default,
   services: services,
-  css: _main.default
+  css: _main.default,
+  updateTexts: updateTexts
 };
 },{"./src/state":"src/state/index.js","./src/ga.js":"src/ga.js","./src/store":"src/store.js","./src/cookie":"src/cookie.js","./src/types":"src/types.js","./src/ui/index":"src/ui/index.js","./src/main.scss":"src/main.scss"}],"test.js":[function(require,module,exports) {
 "use strict";
 
 var _index = require("./index");
 
-var _translations;
+var _translations, _t;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -1392,38 +1435,63 @@ var cookies = [{
   anonymizeIp: true
 }, {
   type: _index.TYPES.FUNCTIONAL,
-  name: 'experience'
+  name: 'experience',
+  required: true
 }, {
   type: _index.TYPES.SOCIAL
 }, {
   type: _index.TYPES.ADVERTISING
 }];
+var translations = (_translations = {
+  banner: {
+    title: 'Banner title',
+    description: 'Banner desc',
+    accept: 'Accept',
+    configure: 'Configure'
+  }
+}, _defineProperty(_translations, _index.TYPES.FUNCTIONAL, {
+  title: 'title func',
+  description: 'description func'
+}), _defineProperty(_translations, _index.TYPES.PERFORMANCE, {
+  title: 'title perf',
+  description: 'description perf'
+}), _defineProperty(_translations, _index.TYPES.SOCIAL, {
+  title: 'title social',
+  description: 'description social'
+}), _defineProperty(_translations, _index.TYPES.ADVERTISING, {
+  title: 'title advert',
+  description: 'description advert'
+}), _defineProperty(_translations, "submit", 'Submit'), _translations);
 (0, _index.init)({
   logs: false,
   debug: true,
   className: 'test-cookies',
-  translations: (_translations = {
-    banner: {
-      title: 'Banner title',
-      description: 'Banner desc',
-      accept: 'Accept',
-      configure: 'Configure'
-    }
-  }, _defineProperty(_translations, _index.TYPES.FUNCTIONAL, {
-    title: 'title func',
-    description: 'description func'
-  }), _defineProperty(_translations, _index.TYPES.PERFORMANCE, {
-    title: 'title perf',
-    description: 'description perf'
-  }), _defineProperty(_translations, _index.TYPES.SOCIAL, {
-    title: 'title social',
-    description: 'description social'
-  }), _defineProperty(_translations, _index.TYPES.ADVERTISING, {
-    title: 'title advert',
-    description: 'description advert'
-  }), _translations),
+  translations: translations,
   cookies: cookies
 });
+var t2 = (_t = {
+  banner: {
+    title: 'Title updated',
+    description: 'Description updated',
+    accept: 'Accept updated',
+    configure: 'Configure updated'
+  }
+}, _defineProperty(_t, _index.TYPES.FUNCTIONAL, {
+  title: 'title func updated',
+  description: 'description func updated'
+}), _defineProperty(_t, _index.TYPES.PERFORMANCE, {
+  title: 'title perf updated',
+  description: 'description perf updated'
+}), _defineProperty(_t, _index.TYPES.SOCIAL, {
+  title: 'title social updated',
+  description: 'description social updated'
+}), _defineProperty(_t, _index.TYPES.ADVERTISING, {
+  title: 'title advert updated',
+  description: 'description advert updated'
+}), _defineProperty(_t, "submit", 'Submit updated'), _t);
+setTimeout(function () {
+  (0, _index.updateTexts)(t2);
+}, 2000);
 var $buttonBanner = document.getElementById('show-banner');
 var $buttonPopin = document.getElementById('show-popin');
 $buttonBanner.addEventListener('click', function () {
@@ -1460,7 +1528,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59989" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51901" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

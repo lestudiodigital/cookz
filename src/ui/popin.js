@@ -10,8 +10,9 @@ let cookies
 let $popin
 let $fields = []
 let $form
+let $submit
 
-function createField (key) {
+function createField (key, params) {
   const field = translations[key]
   if (!field || !field.title || !field.description) {
     console.warn(`Missing title or description for type ${key}`)
@@ -19,6 +20,8 @@ function createField (key) {
   }
 
   const inputParams = {type: 'checkbox', name: key, id: key}
+  if (params.required) inputParams.required = 'required'
+
   if (store[key].get()) inputParams.checked = true
 
   $fields.push(
@@ -36,15 +39,22 @@ function createField (key) {
   )
 }
 
-function create () {
+function create (params) {
   for (const key in cookies) {
-    createField(key)
+    let prms
+    params.forEach(pr => {
+      if (pr.type === key) prms = pr
+    })
+
+    createField(key, prms)
   }
+
+  $submit = crel('button', {type: 'submit'}, translations.submit)
 
   $form = crel(
     'form',
     $fields,
-    crel('button', {type: 'submit'}, 'submit')
+    $submit
   )
 
   $popin = crel(
@@ -54,6 +64,21 @@ function create () {
   )
 
   listen()
+}
+
+function updateTexts (translations) {
+  $submit.innerHTML = translations.submit
+
+  let index = 0
+  for (const key in cookies) {
+    const trls = translations[key]
+    const $field = $fields[index]
+
+    $field.querySelector('.field-title').innerHTML = trls.title
+    $field.querySelector('.field-description').innerHTML = trls.description
+
+    index++
+  }
 }
 
 function onSubmit (e) {
@@ -71,6 +96,7 @@ function onSubmit (e) {
 
   if (!state[TYPES.FUNCTIONAL]) eraseAll()
   store.popinStatus.set(false)
+  store.hasInteract.set(true)
 }
 
 function show () {
@@ -93,22 +119,18 @@ function unlisten () {
   store.popinStatus.unlisten(toggle)
 }
 
-function update () {
-
-}
-
 function destroy () {
   unlisten()
 }
 
-function init (trlts, cks) {
+function init (trlts, cks, params) {
   translations= trlts
   cookies = cks
 
-  create()
+  create(params)
 
   return {
-    update,
+    updateTexts,
     destroy,
     dom: $popin
   }
