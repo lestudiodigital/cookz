@@ -62,12 +62,12 @@ function create (params) {
   listen()
 }
 
-function updateTexts (translations) {
+function updateTexts (translations = {}) {
   $submit.innerHTML = translations.submit
 
   let index = 0
   for (const key in cookies) {
-    const trls = translations[key]
+    const trls = translations[key] || {}
     const $field = $fields[index]
 
     $field.querySelector('.field-title').innerHTML = trls.title

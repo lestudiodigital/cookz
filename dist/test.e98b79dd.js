@@ -881,7 +881,7 @@ function create() {
 }
 
 function updateTexts(translations) {
-  var banner = translations.banner;
+  var banner = translations.banner || {};
   $title.innerHTML = banner.title;
   $description.innerHTML = banner.description;
   $accept.innerHTML = banner.accept;
@@ -1023,12 +1023,13 @@ function create(params) {
   listen();
 }
 
-function updateTexts(translations) {
+function updateTexts() {
+  var translations = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   $submit.innerHTML = translations.submit;
   var index = 0;
 
   for (var key in cookies) {
-    var trls = translations[key];
+    var trls = translations[key] || {};
     var $field = $fields[index];
     $field.querySelector('.field-title').innerHTML = trls.title;
     $field.querySelector('.field-description').innerHTML = trls.description;
@@ -1501,7 +1502,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61442" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59977" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

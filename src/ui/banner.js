@@ -33,7 +33,7 @@ function create () {
 }
 
 function updateTexts (translations) {
-  const {banner} = translations
+  const banner = translations.banner || {}
 
   $title.innerHTML = banner.title
   $description.innerHTML = banner.description
