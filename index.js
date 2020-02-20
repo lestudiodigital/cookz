@@ -103,6 +103,5 @@ module.exports = {
   store,
   TYPES,
   services,
-  css,
   updateTexts
 }

@@ -3,9 +3,10 @@ import {
   TYPES,
   store,
   services,
-  updateTexts,
-  css
+  updateTexts
 } from './index'
+
+// console.log(css)
 
 const cookies = [
   {
