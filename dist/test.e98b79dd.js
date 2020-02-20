@@ -376,7 +376,20 @@ var _createStore = _interopRequireDefault(require("./createStore"));
 var _Signal = _interopRequireDefault(require("./Signal"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./createStore":"src/state/createStore.js","./Signal":"src/state/Signal.js"}],"node_modules/browser-cookies/src/browser-cookies.js":[function(require,module,exports) {
+},{"./createStore":"src/state/createStore.js","./Signal":"src/state/Signal.js"}],"src/store.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  popinStatus: false,
+  bannerStatus: false,
+  hasInteract: true
+};
+exports.default = _default;
+},{}],"node_modules/browser-cookies/src/browser-cookies.js":[function(require,module,exports) {
 exports.defaults = {};
 
 exports.set = function(name, value, options) {
@@ -483,6 +496,10 @@ exports.set = set;
 exports.eraseAll = eraseAll;
 exports.cookies = void 0;
 
+var _store = _interopRequireDefault(require("./store"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -499,6 +516,7 @@ function () {
     _classCallCheck(this, CookieAbstraction);
 
     this.key = key;
+    this.trigger = this.trigger.bind(this);
   }
 
   _createClass(CookieAbstraction, [{
@@ -518,6 +536,11 @@ function () {
     key: "erase",
     value: function erase() {
       browserCookie && browserCookie.erase(this.key);
+    }
+  }, {
+    key: "trigger",
+    value: function trigger(func) {
+      _store.default.functional.get() === true && func(this);
     }
   }]);
 
@@ -549,20 +572,7 @@ function eraseAll() {
     cookies[key].erase();
   }
 }
-},{"browser-cookies":"node_modules/browser-cookies/src/browser-cookies.js"}],"src/store.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
-  popinStatus: false,
-  bannerStatus: false,
-  hasInteract: true
-};
-exports.default = _default;
-},{}],"src/ga.js":[function(require,module,exports) {
+},{"./store":"src/store.js","browser-cookies":"node_modules/browser-cookies/src/browser-cookies.js"}],"src/ga.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1363,6 +1373,7 @@ function init(params) {
       services.ga = (0, _ga.default)(cookie);
     } else if (cookie.type === _types.default.FUNCTIONAL) {
       customCookies[name] = (0, _cookie.add)(cookie.name);
+      services[name] = customCookies[name].trigger;
     }
   }); // Enable functionnal when there at least 1 coookie
 
@@ -1467,6 +1478,11 @@ setTimeout(function () {
 }, 1000);
 var $buttonBanner = document.getElementById('show-banner');
 var $buttonPopin = document.getElementById('show-popin');
+
+_index.services.experience(function (cookie) {
+  return console.log(cookie);
+});
+
 $buttonBanner.addEventListener('click', function () {
   _index.store.bannerStatus.set(true);
 });
@@ -1501,7 +1517,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51946" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52757" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

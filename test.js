@@ -68,6 +68,8 @@ setTimeout(() => {
 const $buttonBanner = document.getElementById('show-banner')
 const $buttonPopin = document.getElementById('show-popin')
 
+services.experience(cookie => console.log(cookie))
+
 $buttonBanner.addEventListener('click', () => {
   store.bannerStatus.set(true)
 })

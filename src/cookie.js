@@ -1,9 +1,12 @@
 let browserCookie
+import store from './store'
+
 if (typeof window !== 'undefined') browserCookie = require('browser-cookies')
 
 class CookieAbstraction {
   constructor (key) {
     this.key = key
+    this.trigger = this.trigger.bind(this)
   }
 
   get () {
@@ -16,6 +19,10 @@ class CookieAbstraction {
 
   erase () {
     browserCookie && browserCookie.erase(this.key)
+  }
+
+  trigger (func) {
+    store.functional.get() === true && func(this)
   }
 }
 

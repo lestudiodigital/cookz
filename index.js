@@ -51,6 +51,7 @@ function init (params) {
       services.ga = ga(cookie)
     } else if (cookie.type === TYPES.FUNCTIONAL) {
       customCookies[name] = add(cookie.name)
+      services[name] = customCookies[name].trigger
     }
   })
 
