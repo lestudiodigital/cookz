@@ -6,25 +6,30 @@ import {
   updateTexts
 } from './index'
 
-// console.log(css)
-
 const cookies = [
+  // {
+  //   type: TYPES.PERFORMANCE,
+  //   service: 'GA',
+  //   UA: 'UA-150555555-1',
+  //   anonymizeIp: true,
+  // },
+  // {
+  //   type: TYPES.FUNCTIONAL,
+  //   name: 'experience',
+  //   required: true
+  // },
+  // {
+  //   type: TYPES.SOCIAL
+  // },
+  // {
+  //   type: TYPES.PERFORMANCE,
+  //   service: 'GTM',
+  //   ID: 'GTM0000'
+  // },
   {
-    type: TYPES.PERFORMANCE,
-    service: 'GA',
-    UA: 'UA-150555555-1',
-    anonymizeIp: true,
-  },
-  {
-    type: TYPES.FUNCTIONAL,
-    name: 'experience',
-    required: true
-  },
-  {
-    type: TYPES.SOCIAL
-  },
-  {
-    type: TYPES.ADVERTISING
+    type: TYPES.ADVERTISING,
+    service: 'FBQ',
+    ID: '208499613540246'
   },
 ]
 
@@ -51,24 +56,35 @@ const translations = {
     title: 'title advert',
     description: 'description advert'
   },
-  submit: 'Submit'
+  submit: 'Submit',
 }
 
 init({
-  logs: false,
+  logs: true,
   debug: true,
   className: 'test-cookies',
   cookies
 })
 
+updateTexts(translations)
+
 setTimeout(() => {
-  updateTexts(translations)
-}, 1000)
+  // Use services
+  services.gtm.trigger(dataLayer => {
+    // dataLayer.push({})
+  })
+
+  // services.fbq.trigger(fbq => {
+    // fbq('track', 'PageView')
+  // })
+
+  // services.ga.trigger(ga => {
+    // ga.send({})
+  // })
+}, 3000)
 
 const $buttonBanner = document.getElementById('show-banner')
 const $buttonPopin = document.getElementById('show-popin')
-
-services.experience(cookie => console.log(cookie))
 
 $buttonBanner.addEventListener('click', () => {
   store.bannerStatus.set(true)

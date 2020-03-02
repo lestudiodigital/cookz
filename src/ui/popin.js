@@ -12,7 +12,7 @@ let $fields = []
 let $form
 let $submit
 
-function createField (key, params) {
+function createField (key, params = {}) {
   const field = translations[key] || {}
 
   const inputParams = {type: 'checkbox', name: key, id: key}

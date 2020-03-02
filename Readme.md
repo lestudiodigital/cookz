@@ -11,7 +11,7 @@ You can see an online [demo][preprod]
 import { init, TYPES } from 'cookz'
 
 const cookies = [
-  // Auto add a functional cookie
+  // Performance service auto add a functional cookie
   {
     type: TYPES.PERFORMANCE,
     service: 'GA',
@@ -20,6 +20,18 @@ const cookies = [
     anonymizeIp: true,
     firstPageView: true,
     forceSSL: true
+  },
+  // GTM
+  {
+    type: TYPES.PERFORMANCE,
+    service: 'GTM',
+    ID: 'GTM0000'
+  },
+  // FBQ Pixel Facebook
+  {
+    type: TYPES.ADVERTISING,
+    service: 'FBQ',
+    ID: '208499613540246'
   },
   // Custom functional cookie
   {
@@ -50,6 +62,16 @@ import { services } from 'cookz'
 
 const UA = 'UAXXXXXX'
 
+
+// Use services
+services.gtm.trigger(dataLayer => {
+  dataLayer.push({})
+})
+
+services.fbq.trigger(fbq => {
+  fbq('track', 'PageView')
+})
+
 services.ga.trigger(ga => {
   ga('config', UA, {
     'page_title': title,
@@ -67,9 +89,13 @@ import { store } from 'cookz'
 - popinStatus : Is popin visible
 - bannerStatus : Is banner visible
 - hasInteract : Has user interact with cookz
+- functional : Functional cookie
+- performance : Performance cookie
+- social : Social cookie
+- advertising : Advertising cookie
 
 
-## TYPES VALUES
+## COOKIES TYPES VALUES
 
 ```js
 import { TYPES } from 'cookz'
@@ -117,12 +143,18 @@ updateTexts(translations)
 ## SAMPLES
 
 ```js
-// Set status
+// Same for all store values
+
+// Get value
+store.bannerStatus.get()
+// Set value
 store.bannerStatus.set(true)
+// Listener function
+function listen (val) { console.log(val) }
 // Listen
-store.bannerStatus.listen(val => console.log(val))
+store.bannerStatus.listen(listen)
 // Unlisten
-store.bannerStatus.unlisten(val => console.log(val))
+store.bannerStatus.unlisten(listen)
 ```
 
 

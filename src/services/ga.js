@@ -1,5 +1,5 @@
-import { add } from './cookie'
-import store from './store'
+import { add } from '../cookie'
+import store from '../store'
 
 function getExpirationDate (ga) {
   const secExpire = 60 * 60 * 24 * 30 * 13 * 1000
@@ -49,7 +49,7 @@ function start (props, cookie) {
 }
 
 function trigger (func) {
-  store.functional.get() === true && func(window.gtag)
+  store.performance.get() === true && func(window.gtag)
 }
 
 function init (props) {

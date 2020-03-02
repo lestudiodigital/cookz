@@ -572,7 +572,7 @@ function eraseAll() {
     cookies[key].erase();
   }
 }
-},{"./store":"src/store.js","browser-cookies":"node_modules/browser-cookies/src/browser-cookies.js"}],"src/ga.js":[function(require,module,exports) {
+},{"./store":"src/store.js","browser-cookies":"node_modules/browser-cookies/src/browser-cookies.js"}],"src/services/ga.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -580,9 +580,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _cookie = require("./cookie");
+var _cookie = require("../cookie");
 
-var _store = _interopRequireDefault(require("./store"));
+var _store = _interopRequireDefault(require("../store"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -632,7 +632,7 @@ function start(props, cookie) {
 }
 
 function trigger(func) {
-  _store.default.functional.get() === true && func(window.gtag);
+  _store.default.performance.get() === true && func(window.gtag);
 }
 
 function init(props) {
@@ -650,7 +650,123 @@ function init(props) {
 
 var _default = init;
 exports.default = _default;
-},{"./cookie":"src/cookie.js","./store":"src/store.js"}],"src/types.js":[function(require,module,exports) {
+},{"../cookie":"src/cookie.js","../store":"src/store.js"}],"src/services/gtm.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _cookie = require("../cookie");
+
+var _store = _interopRequireDefault(require("../store"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var props;
+
+function appendScript(ID) {
+  var noScript = document.createElement('noscript');
+  var funcScript = document.createElement('script');
+  var iframe = document.createElement('iframe');
+  iframe.height = 0;
+  iframe.width = 0;
+  iframe.style.display = "none";
+  iframe.style.visibility = "hidden";
+  iframe.src = "https://www.googletagmanager.com/ns.html?id=".concat(ID);
+  noScript.appendChild(iframe);
+  funcScript.innerHTML = "\n    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\n    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\n    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n    })(window,document,'script','dataLayer','".concat(ID, "');\n  ");
+  var body = document.getElementsByTagName('body')[0];
+  body.appendChild(funcScript);
+  body.appendChild(noScript);
+}
+
+function start(props) {
+  var ID = props.ID;
+}
+
+function trigger(func) {
+  _store.default.performance.get() === true && func(window.dataLayer);
+}
+
+function init(p) {
+  props = p;
+  var _props = props,
+      name = _props.name,
+      logs = _props.logs;
+  logs && console.log("[GTM] => INIT", props);
+  appendScript(props.ID);
+  return {
+    trigger: trigger
+  };
+}
+
+var _default = init;
+exports.default = _default;
+},{"../cookie":"src/cookie.js","../store":"src/store.js"}],"src/services/fbq.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _cookie = require("../cookie");
+
+var _store = _interopRequireDefault(require("../store"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var props;
+
+function appendScript(ID) {
+  var noScript = document.createElement('noscript');
+  var funcScript = document.createElement('script');
+  var img = document.createElement('img');
+  img.height = 1;
+  img.width = 1;
+  img.src = "https://www.facebook.com/tr?id=".concat(ID, "&ev=PageView&noscript=1");
+  noScript.appendChild(img);
+  funcScript.innerHTML = "\n    !function(f,b,e,v,n,t,s)\n    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?\n    n.callMethod.apply(n,arguments):n.queue.push(arguments)};\n    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';\n    n.queue=[];t=b.createElement(e);t.async=!0;\n    t.src=v;s=b.getElementsByTagName(e)[0];\n    s.parentNode.insertBefore(t,s)}(window, document,'script',\n    'https://connect.facebook.net/en_US/fbevents.js');\n  ";
+  var body = document.getElementsByTagName('body')[0];
+  body.appendChild(funcScript);
+  body.appendChild(noScript);
+}
+
+function start(props) {
+  var ID = props.ID;
+  window.fbq('init', ID);
+  window.fbq('track', 'PageView');
+}
+
+function trigger(func) {
+  _store.default.advertising.get() === true && func(window.fbq);
+}
+
+function listen(val) {
+  start(props);
+}
+
+function init(p) {
+  props = p;
+  var _props = props,
+      name = _props.name,
+      logs = _props.logs;
+  logs && console.log("[FBQ] => INIT", props);
+  appendScript(props.ID);
+  console.log(_store.default);
+
+  _store.default.advertising.listen(listen);
+
+  return {
+    trigger: trigger
+  };
+}
+
+var _default = init;
+exports.default = _default;
+},{"../cookie":"src/cookie.js","../store":"src/store.js"}],"src/types.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -986,7 +1102,8 @@ var $fields = [];
 var $form;
 var $submit;
 
-function createField(key, params) {
+function createField(key) {
+  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var field = translations[key] || {};
   var inputParams = {
     type: 'checkbox',
@@ -1312,7 +1429,11 @@ module.hot.accept(reloadCSS);
 
 var _state = require("./src/state");
 
-var _ga = _interopRequireDefault(require("./src/ga.js"));
+var _ga = _interopRequireDefault(require("./src/services/ga.js"));
+
+var _gtm = _interopRequireDefault(require("./src/services/gtm.js"));
+
+var _fbq = _interopRequireDefault(require("./src/services/fbq.js"));
 
 var _store = _interopRequireDefault(require("./src/store"));
 
@@ -1363,18 +1484,11 @@ function init(params) {
   var isSocial;
   var isAdvertising;
   cookies.forEach(function (cookie) {
-    var name = cookie.name;
-    isFunctional |= cookie.type === _types.default.FUNCTIONAL;
-    isPerformance |= cookie.type === _types.default.PERFORMANCE;
-    isSocial |= cookie.type === _types.default.SOCIAL;
-    isAdvertising |= cookie.type === _types.default.ADVERTISING; // GA service
-
-    if (cookie.service === 'GA' && cookie.type === _types.default.PERFORMANCE) {
-      services.ga = (0, _ga.default)(cookie);
-    } else if (cookie.type === _types.default.FUNCTIONAL) {
-      customCookies[name] = (0, _cookie.add)(cookie.name);
-      services[name] = customCookies[name].trigger;
-    }
+    var type = cookie.type;
+    isFunctional |= type === _types.default.FUNCTIONAL;
+    isPerformance |= type === _types.default.PERFORMANCE;
+    isSocial |= type === _types.default.SOCIAL;
+    isAdvertising |= type === _types.default.ADVERTISING;
   }); // Enable functionnal when there at least 1 coookie
 
   if (isSocial || isPerformance || isAdvertising) isFunctional = true; // Check functional type
@@ -1409,8 +1523,24 @@ function init(params) {
     _store.default.bannerStatus.set(true);
 
     _store.default.hasInteract.set(false);
-  } // Listen store events
+  }
 
+  cookies.forEach(function (cookie) {
+    var name = cookie.name; // GA service
+
+    if (cookie.service === 'GA' && cookie.type === _types.default.PERFORMANCE) {
+      services.ga = (0, _ga.default)(cookie);
+    } else if (cookie.service === 'GTM' && cookie.type === _types.default.PERFORMANCE) {
+      services.gtm = (0, _gtm.default)(cookie);
+    } else if (cookie.service === 'FBQ' && cookie.type === _types.default.ADVERTISING) {
+      // FBQ Service
+      services.fbq = (0, _fbq.default)(cookie);
+    } else if (cookie.type === _types.default.FUNCTIONAL) {
+      // Custom functional
+      customCookies[name] = (0, _cookie.add)(cookie.name);
+      services[name] = customCookies[name].trigger;
+    }
+  }); // Listen store events
 
   listen(); // UI Instance
 
@@ -1424,7 +1554,7 @@ module.exports = {
   services: services,
   updateTexts: updateTexts
 };
-},{"./src/state":"src/state/index.js","./src/ga.js":"src/ga.js","./src/store":"src/store.js","./src/cookie":"src/cookie.js","./src/types":"src/types.js","./src/ui/index":"src/ui/index.js","./src/main.scss":"src/main.scss"}],"test.js":[function(require,module,exports) {
+},{"./src/state":"src/state/index.js","./src/services/ga.js":"src/services/ga.js","./src/services/gtm.js":"src/services/gtm.js","./src/services/fbq.js":"src/services/fbq.js","./src/store":"src/store.js","./src/cookie":"src/cookie.js","./src/types":"src/types.js","./src/ui/index":"src/ui/index.js","./src/main.scss":"src/main.scss"}],"test.js":[function(require,module,exports) {
 "use strict";
 
 var _index = require("./index");
@@ -1433,19 +1563,29 @@ var _translations;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var cookies = [{
-  type: _index.TYPES.PERFORMANCE,
-  service: 'GA',
-  UA: 'UA-150555555-1',
-  anonymizeIp: true
-}, {
-  type: _index.TYPES.FUNCTIONAL,
-  name: 'experience',
-  required: true
-}, {
-  type: _index.TYPES.SOCIAL
-}, {
-  type: _index.TYPES.ADVERTISING
+var cookies = [// {
+//   type: TYPES.PERFORMANCE,
+//   service: 'GA',
+//   UA: 'UA-150555555-1',
+//   anonymizeIp: true,
+// },
+// {
+//   type: TYPES.FUNCTIONAL,
+//   name: 'experience',
+//   required: true
+// },
+// {
+//   type: TYPES.SOCIAL
+// },
+// {
+//   type: TYPES.PERFORMANCE,
+//   service: 'GTM',
+//   ID: 'GTM0000'
+// },
+{
+  type: _index.TYPES.ADVERTISING,
+  service: 'FBQ',
+  ID: '208499613540246'
 }];
 var translations = (_translations = {
   banner: {
@@ -1468,21 +1608,25 @@ var translations = (_translations = {
   description: 'description advert'
 }), _defineProperty(_translations, "submit", 'Submit'), _translations);
 (0, _index.init)({
-  logs: false,
+  logs: true,
   debug: true,
   className: 'test-cookies',
   cookies: cookies
 });
+(0, _index.updateTexts)(translations);
 setTimeout(function () {
-  (0, _index.updateTexts)(translations);
-}, 1000);
+  // Use services
+  _index.services.gtm.trigger(function (dataLayer) {// dataLayer.push({})
+  }); // services.fbq.trigger(fbq => {
+  // fbq('track', 'PageView')
+  // })
+  // services.ga.trigger(ga => {
+  // ga.send({})
+  // })
+
+}, 3000);
 var $buttonBanner = document.getElementById('show-banner');
 var $buttonPopin = document.getElementById('show-popin');
-
-_index.services.experience(function (cookie) {
-  return console.log(cookie);
-});
-
 $buttonBanner.addEventListener('click', function () {
   _index.store.bannerStatus.set(true);
 });
@@ -1517,7 +1661,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52757" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58674" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

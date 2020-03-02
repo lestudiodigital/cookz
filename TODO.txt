@@ -1,0 +1,19 @@
+// SOCIAL
+
+# Pixel facebook
+Append de script dans le dom avec params FB if cookie accepted
+
+# Bouton like facebook
+https://developers.facebook.com/docs/plugins/like-button/?locale=fr_FR
+Append de script if cookie accepted
+Boolean to know if you can show or not the button
+
+# Youtube
+Iframe = pas de script juste une valeur de store qui permet de savoir si oui ou non on peut ajouter l'Iframe
+Api = append de script
+
+# GTM
+always Add script + send event names cookies and values
+
+
+// ADVERTISING

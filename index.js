@@ -1,6 +1,8 @@
 import { createStore } from './src/state'
 
-import ga from './src/ga.js'
+import ga from './src/services/ga.js'
+import gtm from './src/services/gtm.js'
+import fbq from './src/services/fbq.js'
 import store from './src/store'
 import {add} from './src/cookie'
 import TYPES from './src/types'
@@ -39,20 +41,12 @@ function init (params) {
   let isAdvertising
 
   cookies.forEach(cookie => {
-    const { name } = cookie
+    const { type } = cookie
 
-    isFunctional |= cookie.type === TYPES.FUNCTIONAL
-    isPerformance |= cookie.type === TYPES.PERFORMANCE
-    isSocial |= cookie.type === TYPES.SOCIAL
-    isAdvertising |= cookie.type === TYPES.ADVERTISING
-
-    // GA service
-    if (cookie.service === 'GA' && cookie.type === TYPES.PERFORMANCE) {
-      services.ga = ga(cookie)
-    } else if (cookie.type === TYPES.FUNCTIONAL) {
-      customCookies[name] = add(cookie.name)
-      services[name] = customCookies[name].trigger
-    }
+    isFunctional |= type === TYPES.FUNCTIONAL
+    isPerformance |= type === TYPES.PERFORMANCE
+    isSocial |= type === TYPES.SOCIAL
+    isAdvertising |= type === TYPES.ADVERTISING
   })
 
   // Enable functionnal when there at least 1 coookie
@@ -90,6 +84,22 @@ function init (params) {
     store.bannerStatus.set(true)
     store.hasInteract.set(false)
   }
+
+  cookies.forEach(cookie => {
+    const { name } = cookie
+
+    // GA service
+    if (cookie.service === 'GA' && cookie.type === TYPES.PERFORMANCE) {
+      services.ga = ga(cookie)
+    } else if (cookie.service === 'GTM' && cookie.type === TYPES.PERFORMANCE) {
+      services.gtm = gtm(cookie)
+    } else if (cookie.service === 'FBQ' && cookie.type === TYPES.ADVERTISING) { // FBQ Service
+      services.fbq = fbq(cookie)
+    } else if (cookie.type === TYPES.FUNCTIONAL) { // Custom functional
+      customCookies[name] = add(cookie.name)
+      services[name] = customCookies[name].trigger
+    }
+  })
 
   // Listen store events
   listen()
