@@ -63,7 +63,11 @@ init({
   logs: true,
   debug: true,
   className: 'test-cookies',
-  cookies
+  cookies,
+  callbacks: {
+    onAccept: () => { console.log('onAccept') },
+    onConfigure: () => { console.log('onConfigure') }
+  }
 })
 
 updateTexts(translations)

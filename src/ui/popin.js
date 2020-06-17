@@ -6,6 +6,7 @@ import classNames from 'classnames'
 
 let translations
 let cookies
+let callbacks
 
 let $popin
 let $fields = []
@@ -93,6 +94,7 @@ function onSubmit (e) {
   if (!state[TYPES.FUNCTIONAL]) eraseAll()
   store.popinStatus.set(false)
   store.hasInteract.set(true)
+  callbacks.onAccept && callbacks.onAccept()
 }
 
 function show () {
@@ -119,7 +121,8 @@ function destroy () {
   unlisten()
 }
 
-function init (trlts, cks, params) {
+function init (trlts, cks, params, cbs) {
+  callbacks = cbs
   translations= trlts
   cookies = cks
 

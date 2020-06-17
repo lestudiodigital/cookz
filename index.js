@@ -31,7 +31,7 @@ function updateTexts (translations) {
 }
 
 function init (params) {
-  const {cookies, logs, translations = {}, debug, className} = params
+  const {cookies, logs, translations = {}, debug, className, callbacks = {}} = params
   const storeValues = {}
   storeValues.logs = params.logs || false
 
@@ -105,7 +105,7 @@ function init (params) {
   listen()
 
   // UI Instance
-  UI = UIManager(_cookies, translations, cookies, debug, className)
+  UI = UIManager(_cookies, translations, cookies, debug, className, callbacks)
 }
 
 

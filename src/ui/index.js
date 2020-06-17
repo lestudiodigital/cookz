@@ -22,9 +22,9 @@ function destroy () {
   debug && debug.destroy()
 }
 
-export default function init (cookies, translations, params, dbg, className = '') {
-  banner = Banner(translations, cookies)
-  popin = Popin(translations, cookies, params)
+export default function init (cookies, translations, params, dbg, className = '', callbacks) {
+  banner = Banner(translations, cookies, params, callbacks)
+  popin = Popin(translations, cookies, params, callbacks)
   if (dbg) debug = Debug()
 
   const $cookz = crel(

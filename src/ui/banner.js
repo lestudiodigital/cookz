@@ -9,6 +9,7 @@ let $title
 let $description
 let cookies
 let translations
+let callbacks
 
 function create () {
   let banner = translations.banner || {}
@@ -62,11 +63,14 @@ function onAccept () {
   for (const key in cookies) {
     store[key].set(true)
   }
+
+  callbacks.onAccept && callbacks.onAccept()
 }
 
 function onConfigure () {
   store.bannerStatus.set(false)
   store.popinStatus.set(true)
+  callbacks.onConfigure && callbacks.onConfigure()
 }
 
 const toggle = bool => bool ? show() : hide()
@@ -83,10 +87,12 @@ function unlisten () {
   $configure.removeEventListener('click', onConfigure)
 }
 
-function init (trlts, cks) {
+function init (trlts, cks, params, cbs) {
+  callbacks = cbs
   translations= trlts
   cookies = cks
   create()
+
 
   return {
     updateTexts,

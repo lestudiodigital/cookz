@@ -509,9 +509,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var browserCookie;
 if (typeof window !== 'undefined') browserCookie = require('browser-cookies');
 
-var CookieAbstraction =
-/*#__PURE__*/
-function () {
+var CookieAbstraction = /*#__PURE__*/function () {
   function CookieAbstraction(key) {
     _classCallCheck(this, CookieAbstraction);
 
@@ -884,12 +882,15 @@ var crel = createCommonjsModule(function (module, exports) {
     }; // Expose proxy interface
 
 
-    crel.proxy = new Proxy(crel, {
-      get: function (target, key) {
-        !(key in crel) && (crel[key] = crel.bind(null, key));
-        return crel[key];
-      }
-    }); // Export crel
+    if (typeof Proxy != "undefined") {
+      crel.proxy = new Proxy(crel, {
+        get: function (target, key) {
+          !(key in crel) && (crel[key] = crel.bind(null, key));
+          return crel[key];
+        }
+      });
+    } // Export crel
+
 
     exporter(crel, func);
   })(function (product, func) {
@@ -979,6 +980,7 @@ var $title;
 var $description;
 var cookies;
 var translations;
+var callbacks;
 
 function create() {
   var banner = translations.banner || {};
@@ -1036,12 +1038,16 @@ function onAccept() {
   for (var key in cookies) {
     _store.default[key].set(true);
   }
+
+  callbacks.onAccept && callbacks.onAccept();
 }
 
 function onConfigure() {
   _store.default.bannerStatus.set(false);
 
   _store.default.popinStatus.set(true);
+
+  callbacks.onConfigure && callbacks.onConfigure();
 }
 
 var toggle = function toggle(bool) {
@@ -1062,7 +1068,8 @@ function unlisten() {
   $configure.removeEventListener('click', onConfigure);
 }
 
-function init(trlts, cks) {
+function init(trlts, cks, params, cbs) {
+  callbacks = cbs;
   translations = trlts;
   cookies = cks;
   create();
@@ -1097,6 +1104,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var translations;
 var cookies;
+var callbacks;
 var $popin;
 var $fields = [];
 var $form;
@@ -1182,6 +1190,8 @@ function onSubmit(e) {
   _store.default.popinStatus.set(false);
 
   _store.default.hasInteract.set(true);
+
+  callbacks.onAccept && callbacks.onAccept();
 }
 
 function show() {
@@ -1212,7 +1222,8 @@ function destroy() {
   unlisten();
 }
 
-function init(trlts, cks, params) {
+function init(trlts, cks, params, cbs) {
+  callbacks = cbs;
   translations = trlts;
   cookies = cks;
   create(params);
@@ -1339,8 +1350,9 @@ function destroy() {
 
 function init(cookies, translations, params, dbg) {
   var className = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
-  banner = (0, _banner.default)(translations, cookies);
-  popin = (0, _popin.default)(translations, cookies, params);
+  var callbacks = arguments.length > 5 ? arguments[5] : undefined;
+  banner = (0, _banner.default)(translations, cookies, params, callbacks);
+  popin = (0, _popin.default)(translations, cookies, params, callbacks);
   if (dbg) debug = (0, _debug.default)();
   var $cookz = (0, _crel.default)('div', {
     class: (0, _classnames.default)('cookz-component', className)
@@ -1476,7 +1488,9 @@ function init(params) {
       _params$translations = params.translations,
       translations = _params$translations === void 0 ? {} : _params$translations,
       debug = params.debug,
-      className = params.className;
+      className = params.className,
+      _params$callbacks = params.callbacks,
+      callbacks = _params$callbacks === void 0 ? {} : _params$callbacks;
   var storeValues = {};
   storeValues.logs = params.logs || false;
   var isFunctional;
@@ -1544,7 +1558,7 @@ function init(params) {
 
   listen(); // UI Instance
 
-  UI = (0, _index.default)(_cookies, translations, cookies, debug, className);
+  UI = (0, _index.default)(_cookies, translations, cookies, debug, className, callbacks);
 }
 
 module.exports = {
@@ -1611,7 +1625,15 @@ var translations = (_translations = {
   logs: true,
   debug: true,
   className: 'test-cookies',
-  cookies: cookies
+  cookies: cookies,
+  callbacks: {
+    onAccept: function onAccept() {
+      console.log('onAccept');
+    },
+    onConfigure: function onConfigure() {
+      console.log('onConfigure');
+    }
+  }
 });
 (0, _index.updateTexts)(translations);
 setTimeout(function () {
@@ -1661,7 +1683,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58674" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54484" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
