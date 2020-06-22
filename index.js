@@ -97,7 +97,7 @@ function init (params) {
       services.fbq = fbq(cookie)
     } else if (cookie.type === TYPES.FUNCTIONAL) { // Custom functional
       customCookies[name] = add(cookie.name)
-      services[name] = customCookies[name].trigger
+      services[name] = customCookies[name]
     }
   })
 
