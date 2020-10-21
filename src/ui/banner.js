@@ -78,7 +78,7 @@ function onConfigure () {
 
 function onRefuse () {
   store.bannerStatus.set(false)
-  store.popinStatus.set(false)
+  store.hasInteract.set(true)
 
   for (const key in cookies) {
     console.log(key)

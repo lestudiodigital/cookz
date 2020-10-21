@@ -47,6 +47,8 @@ init({
   logs: false,
   // Debug panel
   debug: true,
+  // Refuse button all but Functional
+  refuse: true,
   // Custom class css
   className: 'instance-cookies',
   // All cookies instances
@@ -117,6 +119,7 @@ const translations = {
     description: 'Banner desc',
     accept: 'Accept',
     configure: 'Configure',
+    refuse: 'Refuse all',
   },
   [TYPES.FUNCTIONAL]: {
     title: 'title func',
