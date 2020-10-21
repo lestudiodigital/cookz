@@ -975,6 +975,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var $banner;
 var $accept;
+var $refuse;
 var $configure;
 var $title;
 var $description;
@@ -982,7 +983,7 @@ var cookies;
 var translations;
 var callbacks;
 
-function create() {
+function create(refuse) {
   var banner = translations.banner || {};
   $title = (0, _crel.default)('div', {
     class: 'banner-title'
@@ -996,6 +997,9 @@ function create() {
   $configure = (0, _crel.default)('button', {
     class: 'banner-button'
   }, banner.configure);
+  if (refuse) $refuse = (0, _crel.default)('button', {
+    class: 'banner-button'
+  }, banner.refuse);
   $banner = (0, _crel.default)('div', {
     class: (0, _classnames.default)('banner-component', {
       hide: !_store.default.bannerStatus.get()
@@ -1004,7 +1008,7 @@ function create() {
     class: 'banner-content'
   }, $title, $description, (0, _crel.default)('div', {
     class: 'banner-ctas'
-  }, $accept, $configure)));
+  }, $accept, $configure, refuse ? $refuse : null)));
   listen();
 }
 
@@ -1014,6 +1018,7 @@ function updateTexts(translations) {
   $description.innerHTML = banner.description;
   $accept.innerHTML = banner.accept;
   $configure.innerHTML = banner.configure;
+  if ($refuse) $refuse.innerHTML = banner.refuse;
 }
 
 function destroy() {
@@ -1050,6 +1055,20 @@ function onConfigure() {
   callbacks.onConfigure && callbacks.onConfigure();
 }
 
+function onRefuse() {
+  _store.default.bannerStatus.set(false);
+
+  _store.default.popinStatus.set(false);
+
+  for (var key in cookies) {
+    console.log(key);
+
+    _store.default[key].set(key === 'functional' ? true : false);
+  }
+
+  callbacks.onRefuse && callbacks.onRefuse();
+}
+
 var toggle = function toggle(bool) {
   return bool ? show() : hide();
 };
@@ -1059,6 +1078,7 @@ function listen() {
 
   $accept.addEventListener('click', onAccept);
   $configure.addEventListener('click', onConfigure);
+  if ($refuse) $refuse.addEventListener('click', onRefuse);
 }
 
 function unlisten() {
@@ -1066,13 +1086,14 @@ function unlisten() {
 
   $accept.removeEventListener('click', onAccept);
   $configure.removeEventListener('click', onConfigure);
+  if ($refuse) $refuse.removeEventListener('click', onRefuse);
 }
 
-function init(trlts, cks, params, cbs) {
+function init(trlts, cks, params, cbs, refuse) {
   callbacks = cbs;
   translations = trlts;
   cookies = cks;
-  create();
+  create(refuse);
   return {
     updateTexts: updateTexts,
     destroy: destroy,
@@ -1351,7 +1372,8 @@ function destroy() {
 function init(cookies, translations, params, dbg) {
   var className = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '';
   var callbacks = arguments.length > 5 ? arguments[5] : undefined;
-  banner = (0, _banner.default)(translations, cookies, params, callbacks);
+  var refuse = arguments.length > 6 ? arguments[6] : undefined;
+  banner = (0, _banner.default)(translations, cookies, params, callbacks, refuse);
   popin = (0, _popin.default)(translations, cookies, params, callbacks);
   if (dbg) debug = (0, _debug.default)();
   var $cookz = (0, _crel.default)('div', {
@@ -1488,6 +1510,7 @@ function init(params) {
       _params$translations = params.translations,
       translations = _params$translations === void 0 ? {} : _params$translations,
       debug = params.debug,
+      refuse = params.refuse,
       className = params.className,
       _params$callbacks = params.callbacks,
       callbacks = _params$callbacks === void 0 ? {} : _params$callbacks;
@@ -1552,13 +1575,13 @@ function init(params) {
     } else if (cookie.type === _types.default.FUNCTIONAL) {
       // Custom functional
       customCookies[name] = (0, _cookie.add)(cookie.name);
-      services[name] = customCookies[name].trigger;
+      services[name] = customCookies[name];
     }
   }); // Listen store events
 
   listen(); // UI Instance
 
-  UI = (0, _index.default)(_cookies, translations, cookies, debug, className, callbacks);
+  UI = (0, _index.default)(_cookies, translations, cookies, debug, className, callbacks, refuse);
 }
 
 module.exports = {
@@ -1606,7 +1629,8 @@ var translations = (_translations = {
     title: 'Banner <br/><br/>title',
     description: 'Banner desc',
     accept: 'Accept',
-    configure: 'Configure'
+    configure: 'Configure',
+    refuse: 'Refuse All'
   }
 }, _defineProperty(_translations, _index.TYPES.FUNCTIONAL, {
   title: 'title func',
@@ -1624,6 +1648,7 @@ var translations = (_translations = {
 (0, _index.init)({
   logs: true,
   debug: true,
+  refuse: true,
   className: 'test-cookies',
   cookies: cookies,
   callbacks: {
@@ -1632,20 +1657,23 @@ var translations = (_translations = {
     },
     onConfigure: function onConfigure() {
       console.log('onConfigure');
+    },
+    onRefuse: function onRefuse() {
+      console.log('onRefuse');
     }
   }
 });
 (0, _index.updateTexts)(translations);
-setTimeout(function () {
-  // Use services
-  _index.services.gtm.trigger(function (dataLayer) {// dataLayer.push({})
-  }); // services.fbq.trigger(fbq => {
+setTimeout(function () {// Use services
+  // services.gtm.trigger(dataLayer => {
+  // dataLayer.push({})
+  // })
+  // services.fbq.trigger(fbq => {
   // fbq('track', 'PageView')
   // })
   // services.ga.trigger(ga => {
   // ga.send({})
   // })
-
 }, 3000);
 var $buttonBanner = document.getElementById('show-banner');
 var $buttonPopin = document.getElementById('show-popin');
@@ -1683,7 +1711,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54484" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58935" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

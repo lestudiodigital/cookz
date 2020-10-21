@@ -39,6 +39,7 @@ const translations = {
     description: 'Banner desc',
     accept: 'Accept',
     configure: 'Configure',
+    refuse: 'Refuse All',
   },
   [TYPES.FUNCTIONAL]: {
     title: 'title func',
@@ -62,11 +63,13 @@ const translations = {
 init({
   logs: true,
   debug: true,
+  refuse: true,
   className: 'test-cookies',
   cookies,
   callbacks: {
     onAccept: () => { console.log('onAccept') },
-    onConfigure: () => { console.log('onConfigure') }
+    onConfigure: () => { console.log('onConfigure') },
+    onRefuse: () => { console.log('onRefuse') }
   }
 })
 
@@ -74,9 +77,9 @@ updateTexts(translations)
 
 setTimeout(() => {
   // Use services
-  services.gtm.trigger(dataLayer => {
+  // services.gtm.trigger(dataLayer => {
     // dataLayer.push({})
-  })
+  // })
 
   // services.fbq.trigger(fbq => {
     // fbq('track', 'PageView')

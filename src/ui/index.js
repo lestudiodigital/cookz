@@ -22,8 +22,8 @@ function destroy () {
   debug && debug.destroy()
 }
 
-export default function init (cookies, translations, params, dbg, className = '', callbacks) {
-  banner = Banner(translations, cookies, params, callbacks)
+export default function init (cookies, translations, params, dbg, className = '', callbacks, refuse) {
+  banner = Banner(translations, cookies, params, callbacks, refuse)
   popin = Popin(translations, cookies, params, callbacks)
   if (dbg) debug = Debug()
 

@@ -4,6 +4,7 @@ import store from '../store'
 
 let $banner
 let $accept
+let $refuse
 let $configure
 let $title
 let $description
@@ -11,12 +12,13 @@ let cookies
 let translations
 let callbacks
 
-function create () {
+function create (refuse) {
   let banner = translations.banner || {}
   $title = crel('div', {class: 'banner-title'}, banner.title)
   $description = crel('div', {class: 'banner-description'}, banner.description)
   $accept = crel('button', {class: 'banner-button'}, banner.accept)
   $configure = crel('button', {class: 'banner-button'}, banner.configure)
+  if (refuse) $refuse = crel('button', {class: 'banner-button'}, banner.refuse)
 
   $banner = crel(
     'div',
@@ -26,7 +28,7 @@ function create () {
       {class: 'banner-content'},
       $title,
       $description,
-      crel('div', {class: 'banner-ctas'}, $accept, $configure)
+      crel('div', {class: 'banner-ctas'}, $accept, $configure, refuse ? $refuse : null)
     )
   )
 
@@ -40,6 +42,7 @@ function updateTexts (translations) {
   $description.innerHTML = banner.description
   $accept.innerHTML = banner.accept
   $configure.innerHTML = banner.configure
+  if ($refuse) $refuse.innerHTML = banner.refuse
 }
 
 function destroy () {
@@ -73,27 +76,40 @@ function onConfigure () {
   callbacks.onConfigure && callbacks.onConfigure()
 }
 
+function onRefuse () {
+  store.bannerStatus.set(false)
+  store.popinStatus.set(false)
+
+  for (const key in cookies) {
+    console.log(key)
+    store[key].set(key === 'functional' ? true : false)
+  }
+
+  callbacks.onRefuse && callbacks.onRefuse()
+}
+
 const toggle = bool => bool ? show() : hide()
 
 function listen () {
   store.bannerStatus.listen(toggle)
   $accept.addEventListener('click', onAccept)
   $configure.addEventListener('click', onConfigure)
+  if ($refuse) $refuse.addEventListener('click', onRefuse)
 }
 
 function unlisten () {
   store.bannerStatus.unlisten(toggle)
   $accept.removeEventListener('click', onAccept)
   $configure.removeEventListener('click', onConfigure)
+  if ($refuse) $refuse.removeEventListener('click', onRefuse)
 }
 
-function init (trlts, cks, params, cbs) {
+function init (trlts, cks, params, cbs, refuse) {
   callbacks = cbs
   translations= trlts
   cookies = cks
-  create()
-
-
+  create(refuse)
+  
   return {
     updateTexts,
     destroy,
